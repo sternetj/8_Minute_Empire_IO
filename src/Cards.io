@@ -1,6 +1,9 @@
 #!/usr/bin/env io
 
-// This the the sample cards class
+Lobby doFile(Path with(System launchPath, "Action.io"))
+Lobby doFile(Path with(System launchPath, "Ability.io"))
+
+// Below is the the sample cards class
 
 Random setSeed(Date clone now asNumber)
 
@@ -22,5 +25,3 @@ Deck := Object clone do(
     dealCard := method(cards pop)
     show := method(cards foreach(i, card, write(card, " ")); "\n" print)
 )
-
-

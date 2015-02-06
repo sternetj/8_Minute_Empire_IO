@@ -5,7 +5,7 @@ Player := Object clone do(
 		self coins := 0
 		self moveMod := 0
 		self armyMod := 0
-		self flyingMod := 3
+		self flyingMod := 0 //Can have > 3 (one card for VP, can only reduce cost to 1 though)
 		self elixirs := 0
 		self scoreModifiers := list clone
 	)

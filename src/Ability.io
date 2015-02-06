@@ -18,7 +18,7 @@ ArmyAbility := AbstractAbility clone do(
 
 FlyingAbility := AbstractAbility clone do(
 	affect := method(Player,
-		Player flyingMod = (1 max((Player flyingMod) - 1))
+		Player flyingMod = ((Player flyingMod) + 1)
 	)
 )
 

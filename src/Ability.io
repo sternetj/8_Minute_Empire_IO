@@ -1,7 +1,5 @@
 #!/usr/bin/env io
 
-//Lobby doFile(Path with(System launchPath, "Player.io"))
-
 AbstractAbility := Object clone do(
 	affect := method(Player,nil)
 )

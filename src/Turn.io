@@ -64,7 +64,7 @@ eab affect(TestPlayer)
 write("After ElixirAbility: ", TestPlayer toString, "\n")
 **/
 
-/* Action Tests */
+/* Action Tests *
 TestActionPlayer := Player clone
 TestTurn := Turn clone
 TestTurn init(TestActionPlayer)
@@ -88,4 +88,4 @@ dac act(TestTurn)
 write("After DestroyAction: ", TestTurn toString, "\n")
 oac act(TestTurn)
 write("After OrAction: ", TestTurn toString, " a1: ", oac action1, " a2: ", oac action2, "\n")
-/**/
+**/

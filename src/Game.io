@@ -28,11 +28,16 @@ Player4 := Player clone
 Players := list(Player1, Player2, Player3, Player4)
 
 EightMinEm := Object clone do(
-	setParent(OpenGL)
-	width := 500
-	height := 500
-	pieceIn := 0
-	clickState := 0
+	init := method(
+		setParent(OpenGL)
+		self width := 500
+		self height := 500
+		self pieceIn := 0
+		self clickState := 0
+		self gameState := "Play"
+	)
+
+	init
 
 	normalizeX := method(val,
 		return (val - (width / 2)) / (width / 2)
@@ -44,6 +49,7 @@ EightMinEm := Object clone do(
 
 	mouse := method(button, state, x, y,
 		if (state == 0 and button == 0,
+			self gameState = "Play"
 			for(j, 0, Board regions size - 1,
 				p1 :=  (Board regions at(j)) at(0)
 				p2 :=  (Board regions at(j)) at(1)
@@ -70,16 +76,7 @@ EightMinEm := Object clone do(
 	)
 
 	drawGame := method(
-		image := Image clone open(
-			Path with(System launchPath, "../img/cover.jpg"))
-
 		radius := 0.05
-		if (image error, writeln("*** drawPiece: ", image error))
-		glPushMatrix
-		glTranslated(0, 0, 0)
-		image draw
-		glPopMatrix
-
 		glPushMatrix
 		(Color clone set(1, 0, 0, 1)) glColor
 		glTranslated(Board piece x, Board piece y, 0)
@@ -97,13 +94,22 @@ EightMinEm := Object clone do(
 		glPopMatrix
 	)
 
+	drawBackground := method(
+		image := Image clone open(Path with(System launchPath, "../img/cover.jpg"))
+		glPushMatrix
+		glTranslated(.5,.5,0)
+		glScaled(5,5,0)
+		image draw
+		glPopMatrix
+	)
+
 	display := method(
 		//writeln("display stuff")
 		glClear(GL_COLOR_BUFFER_BIT)
 		glLoadIdentity
 
 		//draw stuff here
-		drawGame
+		if(self gameState == "Start", drawBackground, drawGame)
 		glFlush
 		glutSwapBuffers
 	)

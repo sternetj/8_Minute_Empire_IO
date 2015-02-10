@@ -1,4 +1,5 @@
 #!/usr/bin/env io
+# Prototypes for Card Actions
 
 AbstractAction := Object clone do(
 	act := method(Turn,nil)
@@ -10,18 +11,18 @@ ArmyAction := Object clone do(
 	)
 
 	act := method(Turn,
-		Turn armies = ((Turn armies) + nArmies)
+		Turn armies = (nArmies + (Turn player armyMod))
 		Turn actionType := "Army"
 	)
 )
 
 MoveAction := AbstractAction clone do(
 	init := method(n,
-		self nArmies := n
+		self nMoves := n
 	)
 
 	act := method(Turn,
-		Turn armies = nArmies
+		Turn moves = (nMoves + (Turn player moveMod))
 		Turn actionType := "Move"
 	)
 )
@@ -38,12 +39,13 @@ DestroyAction := AbstractAction clone do(
 	)
 )
 
-OrAction := AbstractAction clone do(
-	init := method(a1, a2,
+AndOrAction := AbstractAction clone do(
+	init := method(a1, a2, oper,
+		self operator := oper,
 		self action1 := a1
 		self action2 := a2)
 
 	act := method(Turn,
-		Turn actionType := "Or"
+		Turn actionType := operator toString
 	)
 )

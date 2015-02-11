@@ -41,12 +41,23 @@ DestroyAction := AbstractAction clone do(
 
 AndOrAction := AbstractAction clone do(
 	init := method(a1, a2, oper,
-		self operator := oper,
+		self operator := oper
 		self action1 := a1
 		self action2 := a2)
 
 	act := method(Turn,
-		Turn actionType := operator toString
+		Turn actionType := operator asString
+	)
+)
+
+/* Don't know if we want to split these or not
+OrAction := AbstractAction clone do(
+	init := method(a1, a2,
+		self action1 := a1
+		self action2 := a2)
+
+	act := method(Turn,
+		Turn actionType := "Or"
 	)
 )
 
@@ -59,3 +70,4 @@ AndAction := AbstractAction clone do(
 		Turn actionType := "And"
 	)
 )
+*/

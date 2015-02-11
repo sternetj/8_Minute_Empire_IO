@@ -1,8 +1,8 @@
 #!/usr/bin/env io
 # Contains the logic for maintaing the game state
 
-Lobby doFile(Path with(System launchPath, "Player.io"))
 Lobby doFile(Path with(System launchPath, "Board.io"))
+Lobby doFile(Path with(System launchPath, "Player.io"))
 Lobby doFile(Path with(System launchPath, "Turn.io"))
 
 Player1 := Player clone

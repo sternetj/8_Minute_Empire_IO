@@ -18,7 +18,7 @@ Point := Object clone do(
 	)
 )
 
-Lobby doFile(Path with(System launchPath, "Board.io"))
+Lobby doFile(Path with(System launchPath, "Game.io"))
 
 //only draws PNG files
 ImageWrapper := Object clone do(
@@ -47,9 +47,9 @@ ImageWrapper := Object clone do(
 			image draw
 			glPopMatrix
 		) else (
-			self pieceColor glColor
+			//self pieceColor glColor
 			gluDisk(gluNewQuadric, 0, 0, 90, 1)
-			self pieceColor2 glColor		// darker outline
+			//self pieceColor2 glColor		// darker outline
 			gluDisk(gluNewQuadric, 0, 0, 90, 1)
 		)
 	)

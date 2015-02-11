@@ -13,17 +13,25 @@ List shuffle := method(
     )
 )
 
-Card := Object clone
-Card catagory := nil
-Card action := nil
-Card ability := nil
-Card image := nil
-Card setslots := method(cat,act,abil,img,
-        self catagory := cat
+Card := Object clone do(
+    init := method(cat,act,abil,img,
+        self category := cat
         self action := act
         self ability := abil
-        self image := img)
-Card toString := method("type: " .. catagory .. " image: " .. image .. " ")
+        self image := img
+    )
+
+    setslots := method(cat,act,abil,img,
+        self category := cat
+        self action := act
+        self ability := abil
+        self image := img
+    )
+
+    toString := method(
+        "type: " .. category .. " image: " .. image .. " "
+    )
+)
 
 Deck := Object clone do(
     init := method(
@@ -31,7 +39,6 @@ Deck := Object clone do(
 	
     c0 := Card clone 
     c0 setslots("ancient", MoveAction clone init(5), FlyingAbility clone, "ancientphoenix.png")
-    
     cards append(c0)
 
     c1 := Card clone 
@@ -40,7 +47,7 @@ Deck := Object clone do(
     "ancientsage.png")
     cards append(c1)
     
-    c2 :=Card clone 
+    c2 := Card clone 
     c2 setslots("ancient",
     ArmyAction clone init(4), ElixirAbility clone init(3),
  "ancienttreespirit.png")

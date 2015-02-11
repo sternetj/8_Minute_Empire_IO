@@ -36,14 +36,10 @@ Market := Object clone do(
     )
 )
 
-/* Market Tests *
+
 Market show
-Market buyCard(1)
-Market show
-Market buyCard(2)
-Market show
-Market buyCard(3)
-**/
+
+
 
 
 /* Ability Tests *

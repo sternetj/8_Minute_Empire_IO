@@ -20,14 +20,53 @@ Point := Object clone do(
 
 Lobby doFile(Path with(System launchPath, "Board.io"))
 
+//only draws PNG files
+ImageWrapper := Object clone do(
+	setParent(OpenGL)
+	image := nil
+	width := nil
+	height := nil
+
+	new := method(imgName, xDimension, yDimension,
+		newIw := self clone
+		newIw width := xDimension
+		newIw height := yDimension
+		e := try (
+			newIw image = Image clone open(
+			Path with(System launchPath, "/img/".. imgName ..".png"))
+		)
+		e catch (Exception, if (false, writeln("*** imageWrapper new: ", e error)))
+		return newIw
+	)
+
+	drawImage := method(x, y,
+		if (image) then (
+			if (image error, writeln("*** drawPiece: ", image error))
+			glPushMatrix
+			glTranslated(x - width/2, y - height/2, 0)
+			image draw
+			glPopMatrix
+		) else (
+			self pieceColor glColor
+			gluDisk(gluNewQuadric, 0, 0, 90, 1)
+			self pieceColor2 glColor		// darker outline
+			gluDisk(gluNewQuadric, 0, 0, 90, 1)
+		)
+	)
+)
+
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
-		self width := 500
-		self height := 500
+		self width := 910
+		self height := 710
 		self pieceIn := 0
 		self clickState := 0
-		self gameState := "Play"
+		self gameState := "Start"
+		self backgroundImg := ImageWrapper new("cover", 331, 500)
+		self boardImg := ImageWrapper new("map", 905, 709)
+		self fontSize := 16
+		self gameObj := nil
 	)
 
 	init
@@ -40,9 +79,17 @@ EightMinEm := Object clone do(
 		return ((height / 2) - val) / (height / 2)
 	)
 
+	normalToPointX := method(val,
+		return ((val + 1) * (width / 2))
+	)
+
+	normalToPointY := method(val,
+		return ((val + 1) * (height / 2))
+	)
+
 	mouse := method(button, state, x, y,
 		if (state == 0 and button == 0,
-			self gameState = "Play"
+			//self gameState = "State"
 			for(j, 0, Board regions size - 1,
 				p1 :=  (Board regions at(j)) at(0)
 				p2 :=  (Board regions at(j)) at(1)
@@ -65,69 +112,138 @@ EightMinEm := Object clone do(
 				)
 			)
 		)	
-		self display
+		display
 	)
 
 	drawGame := method(
-		radius := 0.05
-		glPushMatrix
-		(Color clone set(1, 0, 0, 1)) glColor
-		glTranslated(Board piece x, Board piece y, 0)
-		gluDisk(gluNewQuadric, 0, radius, 90, 1)
-		glPopMatrix
+		bkgndColor := Color clone set(0, 0, 0, 1)
+		bkgndColor do(
+			OpenGL glClearColor(red, green, blue, alpha)
+		)
 
-		glPushMatrix
-		glColor4d(1, 0, 1, 1)
-		glBegin(GL_LINES)
-		glVertex3d(0, 1, 0)
-		glVertex3d(0, -1, 0)
-		glVertex3d(-1, 0, 0)
-		glVertex3d(1, 0, 0)
-		glEnd
-		glPopMatrix
+		boardImg drawImage(normalToPointX(0), normalToPointY(0))
+
+		// radius := 0.05
+		// glPushMatrix
+		// (Color clone set(1, 0, 0, 1)) glColor
+		// glTranslated(Board piece x, Board piece y, 0)
+		// gluDisk(gluNewQuadric, 0, radius, 90, 1)
+		// glPopMatrix
+
+		// glPushMatrix
+		// glColor4d(1, 0, 1, 1)
+		// glBegin(GL_LINES)
+		// glVertex3d(0, 1, 0)
+		// glVertex3d(0, -1, 0)
+		// glVertex3d(-1, 0, 0)
+		// glVertex3d(1, 0, 0)
+		// glEnd
+		// glPopMatrix
+
+		if (self width < 905,
+			self width = 905
+		)
+		if (self height < 709,
+			self height = 709
+		)
+	)
+
+	drawString := method(string,
+		if (self ?font) then (
+			self font drawString(string)
+		) else (
+			glPushMatrix
+			glScaled(0.14, 0.1, 0)
+			glutStrokeString(0, string)
+			glPopMatrix
+		)
 	)
 
 	drawBackground := method(
-		image := Image clone open(Path with(System launchPath, "../img/cover.jpg"))
+		bkgndColor := Color clone set(0, 0, 0, 1)
+		bkgndColor do(
+			OpenGL glClearColor(red, green, blue, alpha)
+		)
+		
+		backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
+
 		glPushMatrix
-		glTranslated(.5,.5,0)
-		glScaled(5,5,0)
-		image draw
+		glColor4d(0, 1, 0, 1)
+		glTranslated(5, 10+fontSize, 0)
+		drawString("Welcome to 8 Minute Empires!")
 		glPopMatrix
+		glPushMatrix
+		glTranslated(5, 8, 0)
+		drawString("Select the number of players (2-4) to start a new game...")
+		glPopMatrix
+
+	)
+
+	reshape := method(w, h, 
+		self width = w
+		self height = h
+		glViewport(0, 0, w, h)
+		glMatrixMode(GL_PROJECTION)
+		glLoadIdentity
+		gluOrtho2D(0, w, 0, h)
+
+		glMatrixMode(GL_MODELVIEW)
+		glLoadIdentity
+		drawBackground
+		display
 	)
 
 	display := method(
 		//writeln("display stuff")
 		glClear(GL_COLOR_BUFFER_BIT)
 		glLoadIdentity
-
 		//draw stuff here
 		if(self gameState == "Start", drawBackground, drawGame)
 		glFlush
 		glutSwapBuffers
 	)
 
+	keyboard := method(key, x, y,
+		if (self gameState == "Start",
+			//self gameObj = Game clone
+			if(key asCharacter == "2", 
+				self gameState = "Play" 
+				//self gameObj init(list(Player1, Player2),Board clone)
+			)
+        	if(key asCharacter == "3", 
+        		self gameState = "Play"
+        		//self gameObj init(list(Player1, Player2, Player3),Board clone)
+        	)
+        	if(key asCharacter == "4", 
+        		self gameState = "Play"
+        		//self gameObj init(list(Player1, Player2, Player3, Player4),Board clone)
+        	)
+        	display
+		)
+    )
+
 	run := method(
 		//writeln("run")
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 		glutInitWindowSize(self width, self height)
-		glutInitWindowPosition(1000, 60)
+		glutInitWindowPosition(850, 60)
 		glutInit
 		glutCreateWindow("8 Minute Empires: Legends")
 		glutEventTarget(self)
 		glutDisplayFunc
-		//glutKeyboardFunc
+		glutKeyboardFunc
 		//glutSpecialFunc
 		//glutMotionFunc
 		glutMouseFunc
 		//glutPassiveMotionFunc
-		//glutReshapeFunc
+		glutReshapeFunc
 	
 		glEnable(GL_LINE_SMOOTH)
 		glEnable(GL_BLEND)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE)
 		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
+		glutReshapeWindow(self width, self height)
 		glutMainLoop
 	)
 )

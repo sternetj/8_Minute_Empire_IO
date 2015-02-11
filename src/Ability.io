@@ -23,8 +23,11 @@ FlyingAbility := AbstractAbility clone do(
 )
 
 ElixirAbility := AbstractAbility clone do(
+	init := method(n,
+		self nE := n
+	)
 	affect := method(Player,
-		Player elixirs = ((Player elixirs) + 1)
+		Player elixirs = ((Player elixirs) + nE)
 	)
 )
 
@@ -37,5 +40,11 @@ CoinsAbility := AbstractAbility clone do(
 ScoreModifierAbility := AbstractAbility clone do(
 	affect := method(Player, scoreFn
 		Player scoreModifiers append(scoreFn)
+	)
+)
+
+ImmuneAbility := AbstractAbility clone do(
+	affect := method(Player,
+		Player im := 1
 	)
 )

@@ -49,3 +49,13 @@ AndOrAction := AbstractAction clone do(
 		Turn actionType := operator toString
 	)
 )
+
+AndAction := AbstractAction clone do(
+	init := method(a1, a2,
+		self action1 := a1
+		self action2 := a2)
+
+	act := method(Turn,
+		Turn actionType := "And"
+	)
+)

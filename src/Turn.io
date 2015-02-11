@@ -1,16 +1,40 @@
 #!/usr/bin/env io
+# Prototype for what takes place during a player's turn
 
 Lobby doFile(Path with(System launchPath, "Cards.io"))
 
 Turn := Object clone do(
 	init := method(Player,
 		self armies := 0
+		self moves := 0
 		self actionType := "N/A"
 		self player := Player
+		self done := false
 	)
 	init
-	//do stuff with the board
-	takeTurn := method()
+	
+	takeTurn := method(Board,
+		//1: buy card
+		card := Market buyCard(0)
+		player cards append(card)
+
+		//2: processAction
+		card action act(self)
+
+		//3: doAction
+		while(done not,
+			if(actionType == "Army") then()
+			elseif (actionType == "Move") then()
+			elseif (actionType == "City") then(done = true)
+			elseif (actionType == "Destroy") then(done = true)
+			//AndOrAction
+			else ()
+		)
+
+		//4: addAbility
+		card ability affect(player)
+	)
+
 	toString := method(
 		"arm: " .. armies .. " type: " .. actionType .. " "
 	)
@@ -25,9 +49,11 @@ Market := Object clone do(
 	)
 	init
 	buyCard := method(i,
-		write(available at(i), " bought for ", costs at(i), " coins.\n") 
-		available remove(available at(i))
+		purchased := available at(i)
+		write(purchased, " bought for ", costs at(i), " coins.\n") 
+		available remove(purchased)
 		available append(Deck dealCard)
+		purchased
 	)
     show := method(
     	for(i, 0, 5,

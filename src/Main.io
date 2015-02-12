@@ -33,7 +33,7 @@ ImageWrapper := Object clone do(
 		newIw height := yDimension
 		e := try (
 			newIw image = Image clone open(
-			Path with(System launchPath, "/img/".. imgName ..".png"))
+			Path with(System launchPath, "/img/".. imgName))
 		)
 		e catch (Exception, if (false, writeln("*** imageWrapper new: ", e error)))
 		return newIw
@@ -59,12 +59,12 @@ EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
 		self width := 910
-		self height := 710
+		self height := 1000
 		self pieceIn := 0
 		self clickState := 0
 		self gameState := "Start"
-		self backgroundImg := ImageWrapper new("cover", 331, 500)
-		self boardImg := ImageWrapper new("map", 905, 709)
+		self backgroundImg := ImageWrapper new("cover.png", 331, 500)
+		self boardImg := ImageWrapper new("map.png", 905, 709)
 		self fontSize := 16
 		self gameObj := nil
 	)
@@ -121,7 +121,7 @@ EightMinEm := Object clone do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 
-		boardImg drawImage(normalToPointX(0), normalToPointY(0))
+		boardImg drawImage(normalToPointX(0), normalToPointY(0.25))
 
 		// radius := 0.05
 		// glPushMatrix
@@ -143,8 +143,20 @@ EightMinEm := Object clone do(
 		if (self width < 905,
 			self width = 905
 		)
-		if (self height < 709,
-			self height = 709
+		if (self height < 900,
+			self height = 900
+		)
+	)
+
+	drawCards := method(
+		bkgndColor := Color clone set(0, 0, 0, 1)
+		bkgndColor do(
+			OpenGL glClearColor(red, green, blue, alpha)
+		)
+		ImageWrapper new(Market available at(0) image, 100, 180) drawImage(normalToPointX(0), normalToPointY(-0.78))
+		for(i,0,5,
+			write(i, ": ", Market available at(i)) println
+			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-1+i*0.4), normalToPointY(-0.78))
 		)
 	)
 
@@ -198,7 +210,8 @@ EightMinEm := Object clone do(
 		glClear(GL_COLOR_BUFFER_BIT)
 		glLoadIdentity
 		//draw stuff here
-		if(self gameState == "Start", drawBackground, drawGame)
+		if(self gameState == "Start", drawBackground)
+		if(self gameState == "Play", drawGame; drawCards)
 		glFlush
 		glutSwapBuffers
 	)

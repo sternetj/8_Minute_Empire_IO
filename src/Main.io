@@ -55,6 +55,10 @@ ImageWrapper := Object clone do(
 	)
 )
 
+
+//TODO: try to keep Game, Board, and OpenGL logic in their seperate files
+//TODO: update the game object as input is processed
+//TODO: get pictures for starting location and castles
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
@@ -62,11 +66,16 @@ EightMinEm := Object clone do(
 		self height := 1000
 		self pieceIn := 0
 		self clickState := 0
+		//should be in game?
 		self gameState := "Start"
 		self backgroundImg := ImageWrapper new("cover.png", 331, 500)
 		self boardImg := ImageWrapper new("map.png", 905, 709)
+		self coinIcon := ImageWrapper new("coinsIco.png", 23, 23)
+		self armyIcon := ImageWrapper new("armyIco.png", 18, 18)
+		self moveIcon := ImageWrapper new("moveIco.png", 43, 17)
+		self flightIcon := ImageWrapper new("flightIco.png", 30, 17)
+		self elixirIcon := ImageWrapper new("elixirIco.png", 23, 23)
 		self fontSize := 16
-		self gameObj := nil
 	)
 
 	init
@@ -87,6 +96,7 @@ EightMinEm := Object clone do(
 		return ((val + 1) * (height / 2))
 	)
 
+	//TODO: click updates the market
 	mouse := method(button, state, x, y,
 		if (state == 0 and button == 0,
 			//self gameState = "State"
@@ -115,6 +125,7 @@ EightMinEm := Object clone do(
 		display
 	)
 
+	//TODO: call drawPlayers here with all 4 players
 	drawGame := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
@@ -148,15 +159,16 @@ EightMinEm := Object clone do(
 		)
 	)
 
+	// TODO: Draw the market costs (0,1,1,2,2,3) above/beneath the cards
+	// TODO: Why is the first card not drawing?
 	drawCards := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
-		ImageWrapper new(Market available at(0) image, 100, 180) drawImage(normalToPointX(0), normalToPointY(-0.78))
 		for(i,0,5,
-			write(i, ": ", Market available at(i)) println
-			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-1+i*0.4), normalToPointY(-0.78))
+			write(i, ": ", Market available at(i), "\n")
+			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-.95+i*0.38), normalToPointY(-0.78))
 		)
 	)
 
@@ -191,6 +203,70 @@ EightMinEm := Object clone do(
 
 	)
 
+	// TODO: Parameterize for any given Player
+	// TODO: Stack/move cards based on how many
+	// TODO: Draw all 4 players states at each edge of the screen, 
+	// maybe just use a rotated matrix?
+	drawPlayer := method(
+		bkgndColor := Color clone set(0, 0, 0, 1)
+		bkgndColor do(
+			OpenGL glClearColor(red, green, blue, alpha)
+		)
+
+		/* setup test drawPlayer */
+		cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
+		testPlayer := Player clone
+		testPlayer init(14)
+		cardList foreach(c, testPlayer cards append(c))
+		testPlayer cards foreach(c, c ability affect(testPlayer))
+		/**/
+
+		//Draw Cards
+		testPlayer cards foreach(i, c,
+			ImageWrapper new(c image, 100, 180) drawImage(normalToPointX(-.4 + .4 * i), normalToPointY(-1.15))
+		)
+
+		//Draw Modifiers
+		glPushMatrix
+		glTranslated(865, 105, 0)
+		coinIcon drawImage(0,0)
+		armyIcon drawImage(3,-23)
+		moveIcon drawImage(-10,-43)
+		flightIcon drawImage(-3,-63)
+		elixirIcon drawImage(0,-88)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(0, 1, 0, 1)
+		glTranslated(880, 100, 0)
+		drawString(testPlayer coins asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(1, 0, 0, 1)
+		glTranslated(880, 80, 0)
+		drawString("+" .. testPlayer armyMod asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(1, 0, 1, 1)
+		glTranslated(880, 57, 0)
+		drawString("+" ..  testPlayer moveMod asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(1, 1, 0, 1)
+		glTranslated(880, 37, 0)
+		drawString(testPlayer flyingMod asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(0, 1, 1, 1)
+		glTranslated(880, 12, 0)
+		drawString(testPlayer elixirs asString)
+		glPopMatrix
+	)
+
 	reshape := method(w, h, 
 		self width = w
 		self height = h
@@ -209,9 +285,9 @@ EightMinEm := Object clone do(
 		//writeln("display stuff")
 		glClear(GL_COLOR_BUFFER_BIT)
 		glLoadIdentity
+
 		//draw stuff here
-		if(self gameState == "Start", drawBackground)
-		if(self gameState == "Play", drawGame; drawCards)
+		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame; drawCards) else(drawPlayer)
 		glFlush
 		glutSwapBuffers
 	)
@@ -230,6 +306,9 @@ EightMinEm := Object clone do(
         	if(key asCharacter == "4", 
         		self gameState = "Play"
         		//self gameObj init(list(Player1, Player2, Player3, Player4),Board clone)
+        	)
+        	if(key asCharacter == "5",
+        		self gameState = "Player"
         	)
         	display
 		)

@@ -3,6 +3,8 @@
 
 Lobby doFile(Path with(System launchPath, "Cards.io"))
 
+// TODO : Messaging to tell player what to do on turn
+
 Turn := Object clone do(
 	init := method(Player,
 		self armies := 0
@@ -13,6 +15,7 @@ Turn := Object clone do(
 	)
 	init
 	
+	// TODO: Implement this
 	takeTurn := method(Board,
 		//1: buy card
 		card := Market buyCard(0)
@@ -52,7 +55,7 @@ Market := Object clone do(
 		purchased := available at(i)
 		write(purchased, " bought for ", costs at(i), " coins.\n") 
 		available remove(purchased)
-		available append(Deck dealCard)
+		if(Deck cards size > 0, available append(Deck dealCard))
 		purchased
 	)
     show := method(
@@ -62,7 +65,7 @@ Market := Object clone do(
     )
 )
 
-Market show
+//Market show
 
 /* Market Tests * 	
 Market show 	

@@ -62,7 +62,7 @@ Market := Object clone do(
     )
 )
 
-Market show
+//Market show
 
 /* Market Tests * 	
 Market show 	

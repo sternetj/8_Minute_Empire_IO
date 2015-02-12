@@ -33,7 +33,7 @@ ImageWrapper := Object clone do(
 		newIw height := yDimension
 		e := try (
 			newIw image = Image clone open(
-			Path with(System launchPath, "/img/".. imgName ..".png"))
+			Path with(System launchPath, "/img/".. imgName))
 		)
 		e catch (Exception, if (false, writeln("*** imageWrapper new: ", e error)))
 		return newIw
@@ -62,9 +62,16 @@ EightMinEm := Object clone do(
 		self height := 710
 		self pieceIn := 0
 		self clickState := 0
+		//should be in game
 		self gameState := "Start"
-		self backgroundImg := ImageWrapper new("cover", 331, 500)
-		self boardImg := ImageWrapper new("map", 905, 709)
+		self backgroundImg := ImageWrapper new("cover.png", 331, 500)
+		//should be in board
+		self boardImg := ImageWrapper new("map.png", 905, 709)
+		self coinIcon := ImageWrapper new("coinsIco.png", 23, 23)
+		self armyIcon := ImageWrapper new("armyIco.png", 18, 18)
+		self moveIcon := ImageWrapper new("moveIco.png", 43, 17)
+		self flightIcon := ImageWrapper new("flightIco.png", 30, 17)
+		self elixirIcon := ImageWrapper new("elixirIco.png", 23, 23)
 		self fontSize := 16
 		self gameObj := nil
 	)
@@ -179,6 +186,73 @@ EightMinEm := Object clone do(
 
 	)
 
+	drawPlayer := method(
+		bkgndColor := Color clone set(0, 0, 0, 1)
+		bkgndColor do(
+			OpenGL glClearColor(red, green, blue, alpha)
+		)
+
+		/* setup test drawPlayer */
+		cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
+		testPlayer := Player clone
+		testPlayer init(14)
+		cardList foreach(c, testPlayer cards append(c))
+		testPlayer cards foreach(c, c println)
+		testPlayer asString println
+		"here" println
+		testPlayer cards foreach(c, c ability affect(testPlayer))
+		"there" println
+		/**/
+
+		//Draw Cards
+
+
+		//Draw Modifiers
+		coinIcon drawImage(normalToPointX(.9), normalToPointY(-.705))
+		armyIcon drawImage(normalToPointX(.905), normalToPointY(-.77))
+		moveIcon drawImage(normalToPointX(.875), normalToPointY(-.82))
+		flightIcon drawImage(normalToPointX(.89), normalToPointY(-.88))
+		elixirIcon drawImage(normalToPointX(.9), normalToPointY(-.95))
+
+		i := 0
+		testPlayer cards foreach(c,
+			"drawing card" println
+			i = i + 1
+			img := ImageWrapper new(c image, 200, 300)
+		 	img drawImage(normalToPointX(-.95 + .5*i), normalToPointY(.9))
+		)
+
+		glPushMatrix
+		glColor4d(0, 1, 0, 1)
+		glTranslated(880, 100, 0)
+		drawString(testPlayer coins asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(1, 0, 0, 1)
+		glTranslated(880, 80, 0)
+		drawString("+" .. testPlayer armyMod asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(0, 0, 1, 1)
+		glTranslated(880, 57, 0)
+		drawString("+" ..  testPlayer moveMod asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(1, 1, 0, 1)
+		glTranslated(880, 37, 0)
+		drawString(testPlayer flyingMod asString)
+		glPopMatrix
+
+		glPushMatrix
+		glColor4d(0, 1, 1, 1)
+		glTranslated(880, 12, 0)
+		drawString(testPlayer elixirs asString)
+		glPopMatrix
+	)
+
 	reshape := method(w, h, 
 		self width = w
 		self height = h
@@ -197,8 +271,10 @@ EightMinEm := Object clone do(
 		//writeln("display stuff")
 		glClear(GL_COLOR_BUFFER_BIT)
 		glLoadIdentity
+
 		//draw stuff here
-		if(self gameState == "Start", drawBackground, drawGame)
+		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame) else(drawPlayer)
+
 		glFlush
 		glutSwapBuffers
 	)
@@ -217,6 +293,9 @@ EightMinEm := Object clone do(
         	if(key asCharacter == "4", 
         		self gameState = "Play"
         		//self gameObj init(list(Player1, Player2, Player3, Player4),Board clone)
+        	)
+        	if(key asCharacter == "5",
+        		self gameState = "Player"
         	)
         	display
 		)

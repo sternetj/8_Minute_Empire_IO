@@ -2,10 +2,12 @@
 # Prototypes for Card Actions
 
 AbstractAction := Object clone do(
-	act := method(Turn,nil)
+	act := method(Turn,
+		nil
+	)
 )
 
-ArmyAction := Object clone do(
+ArmyAction := AbstractAction clone do(
 	init := method(n,
 		self nArmies := n
 	)

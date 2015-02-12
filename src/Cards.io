@@ -36,57 +36,103 @@ Card := Object clone do(
 Deck := Object clone do(
     init := method(
 	self cards := List clone
+
+    // doing <Action> clone init() doesn't work because
+    // init is a method and returns the last thing not the object
+    // so premaking all these abilities
+
+    //Army Abilities
+    a1 := ArmyAction clone
+    a1 init(1)
+    a3 := ArmyAction clone
+    a3 init(3)
+    a4 := ArmyAction clone
+    a4 init(4)
+
+    //Move Abilities
+    m3 := MoveAction clone
+    m3 init(3)
+    m4 := MoveAction clone
+    m4 init(4)
+    m5 := MoveAction clone
+    m5 init(5)
+    m6 := MoveAction clone
+    m6 init(6)
+
+    //Elixir Abilities
+    e1 := ElixirAbility clone
+    e1 init(1)
+    e2 := ElixirAbility clone
+    e2 init(2)
+    e3 := ElixirAbility clone
+    e3 init(3)
+
+    //Other Actions/Abilities
+    ca := CityAction clone
+    ma := MoveAbility clone
+    aa := ArmyAbility clone
+    fa := FlyingAbility clone
+
 	
     c0 := Card clone 
-    c0 setslots("ancient", MoveAction clone init(5), FlyingAbility clone, "ancientphoenix.png")
+    c0 setslots("ancient", m5, fa, "ancientphoenix.png")
     cards append(c0)
 
     c1 := Card clone 
-    c1 setslots("ancient",
-    MoveAction clone init(3), ScoreModifierAbility clone,
-    "ancientsage.png")
+    fn1 := ScoreModifierAbility clone
+    /*fn1 init(method(Player,
+            pts := 0
+            Player cards foreach(c, if(c category == "ancient", pts = (pts + 1)))
+            pts
+        )
+    )*/
+    c1 setslots("ancient", m3, fn1, clone,"ancientsage.png")
     cards append(c1)
     
     c2 := Card clone 
-    c2 setslots("ancient",
-    ArmyAction clone init(4), ElixirAbility clone init(3),
- "ancienttreespirit.png")
+    c2 setslots("ancient", a4, e3,"ancienttreespirit.png")
     cards append(c2)
     
     c3 := Card clone 
-    c3 setslots("ancient", AndOrAction clone init( ArmyAction clone init(1),CityAction clone init(1), "and"), 
-    ArmyAbility clone,
-    "ancientwoods.png")
+    c3 setslots("ancient", AndOrAction clone init(a1, ca, "and"), aa, "ancientwoods.png")
     cards append(c3)
 
     c4 := Card clone 
-    c4 setslots("arcane", ArmyAction clone init(4), MoveAbility clone, "arcanemanticore.png")
+    c4 setslots("arcane", a4, ma, "arcanemanticore.png")
     cards append(c4)
 
     c5 := Card clone 
-    c5 setslots("arcane", AndOrAction clone init( ArmyAction clone init(3),MoveAction clone init(4), "or"), FlyingAbility clone, "arcanesphinx.png")
+    c5 setslots("arcane", AndOrAction clone init(a3, m4, "or"), fa, "arcanesphinx.png")
     cards append(c5)
 
-    c6 := Card clone 
-    c6 setslots("arcane", MoveAction clone init(3), ScoreModifierAbility clone, "arcanetemple.png")
+    c6 := Card clone
+    fn6 := ScoreModifierAbility clone
+    /*fn6 init(method(Player,
+            pts := 0
+            Player cards foreach(c, if(c category == "arcane", pts = (pts + 1)))
+            pts
+        )
+    )*/
+    c6 setslots("arcane", m3, fn6, "arcanetemple.png")
     cards append(c6)
 
     c7 := Card clone 
-    c7 setslots("castle", AndOrAction clone init( ArmyAction clone init(3),CityAction clone init(1), "or"), ElixirAbility clone init(1), "castle1.png")
+    c7 setslots("castle", AndOrAction clone init(a3, ca, "or"), e1, "castle1.png")
     cards append(c7)
 
     c8 := Card clone 
-    c8 setslots("castle", AndOrAction clone init( MoveAction clone init(3),CityAction clone init(1), "and"), ElixirAbility clone init(1), "castle2.png")
+    c8 setslots("castle", AndOrAction clone init(m3, ca, "and"), e1, "castle2.png")
     cards append(c8)
 
     c9 := Card clone 
-    c9 setslots("cursed",  MoveAction clone init(6), ElixirAbility clone init(2), "cursedbanshee.png")
+    c9 setslots("cursed", m6, e2, "cursedbanshee.png")
     cards append(c9)
 
     c10 := Card clone 
-    c10 setslots("cursed",  MoveAction clone init(5), FlyingAbility clone init(2), "cursedgargoyles.png")
+    c10 setslots("cursed", m5, fa, "cursedgargoyles.png")
     cards append(c10)
 
+    /*
     c11 := Card clone 
     c11 setslots("cursed",  AndOrAction clone init( MoveAction clone init(4),ArmyAction clone init(3), "or"), ElixirAbility clone init(1), "cursedking.png")
     cards append(c11)
@@ -163,11 +209,11 @@ Deck := Object clone do(
     c29 setslots("night", AndOrAction clone init(DestroyAction clone ,ArmyAction clone init(3), "and"), ArmyAbility clone, "nightwizard.png")
     cards append(c29) 
 
-     c30 := Card clone 
+    c30 := Card clone 
     c30 setslots("noble", ArmyAction clone init(3), ScoreModifierAbility clone, "noblehills.png")
     cards append(c30)  
 
-     c31 := Card clone 
+    c31 := Card clone 
     c31 setslots("noble", AndOrAction clone init(DestroyAction clone ,ArmyAction clone init(4), "and"), MoveAbility clone, "nobleknight.png")
     cards append(c31)   
 
@@ -177,7 +223,7 @@ Deck := Object clone do(
 
     c33 := Card clone 
     c33 setslots("dire", CityAction clone, ScoreModifierAbility clone, "stronghold.png")
-    cards append(c33)           
+    cards append(c33)  */         
 
     )
 
@@ -187,5 +233,4 @@ Deck := Object clone do(
     show := method(cards map(card, write(card toString, " \n")); "\n" print)
 )
 
-cs := Deck show
-
+//cs := Deck show

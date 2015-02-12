@@ -1,7 +1,9 @@
 #!/usr/bin/env io
 
 AbstractAbility := Object clone do(
-	affect := method(Player,nil)
+	affect := method(Player,
+		nil
+	)
 )
 
 MoveAbility := AbstractAbility clone do(
@@ -38,7 +40,7 @@ CoinsAbility := AbstractAbility clone do(
 )
 
 ScoreModifierAbility := AbstractAbility clone do(
-	affect := method(Player, scoreFn
+	affect := method(Player, scoreFn,
 		Player scoreModifiers append(scoreFn)
 	)
 )

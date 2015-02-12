@@ -17,13 +17,13 @@ Player := Object clone do(
 		"C: " .. coins .. " MM: " .. moveMod .. " AM: " .. armyMod .. " FM: " .. flyingMod .. " Elxr: " .. elixirs
 	)
 
-	//Not tested
+	// TODO: find a way to lazy evaluate functions
+	// or, stop using functors
 	getModifiedScore := method(score,
 		foreach(mod, score = score + mod)
 		score
 	)
 
-	//Not tested
 	getFlightCost := method(
 		1 max(3 - flyingMod)
 	)

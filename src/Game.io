@@ -5,12 +5,6 @@ Lobby doFile(Path with(System launchPath, "Board.io"))
 Lobby doFile(Path with(System launchPath, "Player.io"))
 Lobby doFile(Path with(System launchPath, "Turn.io"))
 
-//Player1 := Player clone
-//Player2 := Player clone
-//Player3 := Player clone
-//Player4 := Player clone
-//Players := list(Player1, Player2, Player3, Player4)
-
 Random setSeed(Date clone now asNumber)
 
 Game := Object clone do(
@@ -26,7 +20,7 @@ Game := Object clone do(
 				 elseif(nPlayers == 3) then(11)
 				 else(9)
 
-		for(p, 0, nPlayers, players append(Player clone init(coins)))
+		for(p, 0, nPlayers, players append(p := Player clone; p init(coins)))
 		self maxTurns := if(nPlayers == 2) then(13) 
 						 elseif(nPlayers == 3) then(10)
 						 else(8)
@@ -39,5 +33,5 @@ Game := Object clone do(
 		gameState = "Play"
 	)
 
-	//game loop
+	// TODO: Game Loop!
 )

@@ -154,15 +154,15 @@ EightMinEm := Object clone do(
 		)
 	)
 
+	// TODO: Why is the first card not drawing?
 	drawCards := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
-		ImageWrapper new(Market available at(0) image, 100, 180) drawImage(normalToPointX(0), normalToPointY(-0.78))
 		for(i,0,5,
-			write(i, ": ", Market available at(i)) println
-			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-1+i*0.4), normalToPointY(-0.78))
+			write(i, ": ", Market available at(i), "\n")
+			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-.95+i*0.38), normalToPointY(-0.78))
 		)
 	)
 
@@ -197,6 +197,10 @@ EightMinEm := Object clone do(
 
 	)
 
+	// TODO: Parameterize for any given Player
+	// TODO: Stack/move cards based on how many
+	// TODO: Draw all 4 players states at each edge of the screen, 
+	// maybe just use a rotated matrix?
 	drawPlayer := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
@@ -208,30 +212,23 @@ EightMinEm := Object clone do(
 		testPlayer := Player clone
 		testPlayer init(14)
 		cardList foreach(c, testPlayer cards append(c))
-		testPlayer cards foreach(c, c println)
-		testPlayer asString println
-		"here" println
 		testPlayer cards foreach(c, c ability affect(testPlayer))
-		"there" println
 		/**/
 
 		//Draw Cards
-
+		testPlayer cards foreach(i, c,
+			ImageWrapper new(c image, 100, 180) drawImage(normalToPointX(-.4 + .4 * i), normalToPointY(-1.15))
+		)
 
 		//Draw Modifiers
-		coinIcon drawImage(normalToPointX(.9), normalToPointY(-.705))
-		armyIcon drawImage(normalToPointX(.905), normalToPointY(-.77))
-		moveIcon drawImage(normalToPointX(.875), normalToPointY(-.82))
-		flightIcon drawImage(normalToPointX(.89), normalToPointY(-.88))
-		elixirIcon drawImage(normalToPointX(.9), normalToPointY(-.95))
-
-		i := 0
-		testPlayer cards foreach(c,
-			"drawing card" println
-			i = i + 1
-			img := ImageWrapper new(c image, 200, 300)
-		 	img drawImage(normalToPointX(-.95 + .5*i), normalToPointY(.9))
-		)
+		glPushMatrix
+		glTranslated(865, 105, 0)
+		coinIcon drawImage(0,0)
+		armyIcon drawImage(3,-23)
+		moveIcon drawImage(-10,-43)
+		flightIcon drawImage(-3,-63)
+		elixirIcon drawImage(0,-88)
+		glPopMatrix
 
 		glPushMatrix
 		glColor4d(0, 1, 0, 1)
@@ -246,7 +243,7 @@ EightMinEm := Object clone do(
 		glPopMatrix
 
 		glPushMatrix
-		glColor4d(0, 0, 1, 1)
+		glColor4d(1, 0, 1, 1)
 		glTranslated(880, 57, 0)
 		drawString("+" ..  testPlayer moveMod asString)
 		glPopMatrix

@@ -1,5 +1,8 @@
 #!/usr/bin/env io
 
+// TODO: Render Pieces/Castles/Starting location
+// TODO: Regions correspond to regions as pictured
+
 Board := Object clone do(
 	regions := list(list(Point clone init(-1,1),Point clone init(0,0)),
 					list(Point clone init(0,1),Point clone init(1,0)),

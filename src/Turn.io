@@ -3,6 +3,8 @@
 
 Lobby doFile(Path with(System launchPath, "Cards.io"))
 
+// TODO : Messaging to tell player what to do on turn
+
 Turn := Object clone do(
 	init := method(Player,
 		self armies := 0
@@ -13,6 +15,7 @@ Turn := Object clone do(
 	)
 	init
 	
+	// TODO: Implement this
 	takeTurn := method(Board,
 		//1: buy card
 		card := Market buyCard(0)

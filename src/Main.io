@@ -55,6 +55,10 @@ ImageWrapper := Object clone do(
 	)
 )
 
+
+//TODO: try to keep Game, Board, and OpenGL logic in their seperate files
+//TODO: update the game object as input is processed
+//TODO: get pictures for starting location and castles
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
@@ -72,7 +76,6 @@ EightMinEm := Object clone do(
 		self flightIcon := ImageWrapper new("flightIco.png", 30, 17)
 		self elixirIcon := ImageWrapper new("elixirIco.png", 23, 23)
 		self fontSize := 16
-		self gameObj := nil
 	)
 
 	init
@@ -93,6 +96,7 @@ EightMinEm := Object clone do(
 		return ((val + 1) * (height / 2))
 	)
 
+	//TODO: click updates the market
 	mouse := method(button, state, x, y,
 		if (state == 0 and button == 0,
 			//self gameState = "State"
@@ -121,6 +125,7 @@ EightMinEm := Object clone do(
 		display
 	)
 
+	//TODO: call drawPlayers here with all 4 players
 	drawGame := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
@@ -154,6 +159,7 @@ EightMinEm := Object clone do(
 		)
 	)
 
+	// TODO: Draw the market costs (0,1,1,2,2,3) above/beneath the cards
 	// TODO: Why is the first card not drawing?
 	drawCards := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)

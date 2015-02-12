@@ -32,6 +32,8 @@ Card := Object clone do(
     )
 )
 
+// TODO: do we need to handle the deck running out of cards?
+
 Deck := Object clone do(
     init := method(
 	    self cards := List clone

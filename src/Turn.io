@@ -55,7 +55,7 @@ Market := Object clone do(
 		purchased := available at(i)
 		write(purchased, " bought for ", costs at(i), " coins.\n") 
 		available remove(purchased)
-		available append(Deck dealCard)
+		if(Deck cards size > 0, available append(Deck dealCard))
 		purchased
 	)
     show := method(

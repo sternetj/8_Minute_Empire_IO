@@ -138,7 +138,7 @@ Deck := Object clone do(
     cards append(c11)
 
     c12 := Card clone 
-    c12 setslots("cursed",  CityAction clone init(1), MoveAbility clone, "cursedmansolenm.png")
+    c12 setslots("cursed",  CityAction clone init(1), MoveAbility clone, "cursedmausoleum.png")
     cards append(c12)
 
     c13 := Card clone 
@@ -162,7 +162,7 @@ Deck := Object clone do(
     cards append(c17)
 
     c18 := Card clone 
-    c18 setslots("dire",  MoveAction clone init(2), ScoreModifierAbility clone, "direorge.png")
+    c18 setslots("dire",  MoveAction clone init(2), ScoreModifierAbility clone, "direogre.png")
     cards append(c18)
 
     c19 := Card clone 

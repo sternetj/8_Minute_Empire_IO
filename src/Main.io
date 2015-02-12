@@ -59,13 +59,12 @@ EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
 		self width := 910
-		self height := 710
+		self height := 1000
 		self pieceIn := 0
 		self clickState := 0
-		//should be in game
+		//should be in game?
 		self gameState := "Start"
 		self backgroundImg := ImageWrapper new("cover.png", 331, 500)
-		//should be in board
 		self boardImg := ImageWrapper new("map.png", 905, 709)
 		self coinIcon := ImageWrapper new("coinsIco.png", 23, 23)
 		self armyIcon := ImageWrapper new("armyIco.png", 18, 18)
@@ -128,7 +127,7 @@ EightMinEm := Object clone do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 
-		boardImg drawImage(normalToPointX(0), normalToPointY(0))
+		boardImg drawImage(normalToPointX(0), normalToPointY(0.25))
 
 		// radius := 0.05
 		// glPushMatrix
@@ -150,8 +149,20 @@ EightMinEm := Object clone do(
 		if (self width < 905,
 			self width = 905
 		)
-		if (self height < 709,
-			self height = 709
+		if (self height < 900,
+			self height = 900
+		)
+	)
+
+	drawCards := method(
+		bkgndColor := Color clone set(0, 0, 0, 1)
+		bkgndColor do(
+			OpenGL glClearColor(red, green, blue, alpha)
+		)
+		ImageWrapper new(Market available at(0) image, 100, 180) drawImage(normalToPointX(0), normalToPointY(-0.78))
+		for(i,0,5,
+			write(i, ": ", Market available at(i)) println
+			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-1+i*0.4), normalToPointY(-0.78))
 		)
 	)
 
@@ -273,8 +284,7 @@ EightMinEm := Object clone do(
 		glLoadIdentity
 
 		//draw stuff here
-		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame) else(drawPlayer)
-
+		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame; drawCards) else(drawPlayer)
 		glFlush
 		glutSwapBuffers
 	)

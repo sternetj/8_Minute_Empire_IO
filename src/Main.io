@@ -97,30 +97,18 @@ EightMinEm := Object clone do(
 	)
 
 	//TODO: click updates the market
-	mouse := method(button, state, x, y,
+	mouse := method(button, state, mx, my,
 		if (state == 0 and button == 0,
-			//self gameState = "State"
+			writeln("(",mx,",",self height - my,")")
+			self clickState = 1
 			for(j, 0, Board regions size - 1,
-				p1 :=  (Board regions at(j)) at(0)
-				p2 :=  (Board regions at(j)) at(1)
-				if (((self normalizeX(x)) >= (p1 x)) and 
-					((self normalizeX(x)) < (p2 x)) and
-					((self normalizeY(y)) <= (p1 y)) and 
-					((self normalizeY(y)) > (p2 y)),
-					if (pieceIn == j,
-						//then
-						self clickState = 1
-						return,
-						if (self clickState == 1,
-							self clickState = 0
-							Board piece x = (p1 x) + 0.5
-							Board piece y = (p1 y) - 0.5
-							self pieceIn = j
-							return
-						)
-					)			
+				px :=  (Board regions at(j)) x
+				py :=  (Board regions at(j)) y
+				if(((px - mx) abs < 10) and ((py - (self height - my)) abs < 10),
+					writeln("In region ", j + 1)
 				)
-			)
+			),
+			self clickState = 0
 		)	
 		display
 	)
@@ -133,23 +121,6 @@ EightMinEm := Object clone do(
 		)
 
 		boardImg drawImage(normalToPointX(0), normalToPointY(0.25))
-
-		// radius := 0.05
-		// glPushMatrix
-		// (Color clone set(1, 0, 0, 1)) glColor
-		// glTranslated(Board piece x, Board piece y, 0)
-		// gluDisk(gluNewQuadric, 0, radius, 90, 1)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 0, 1, 1)
-		// glBegin(GL_LINES)
-		// glVertex3d(0, 1, 0)
-		// glVertex3d(0, -1, 0)
-		// glVertex3d(-1, 0, 0)
-		// glVertex3d(1, 0, 0)
-		// glEnd
-		// glPopMatrix
 
 		if (self width < 905,
 			self width = 905
@@ -183,13 +154,35 @@ EightMinEm := Object clone do(
 		)
 	)
 
+	drawRegions := method(
+		for(j, 0, Board regions size - 1,
+			radius := 10
+			glPushMatrix
+			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
+			glTranslated(Board regions at(j) x, Board regions at(j) y, 0)
+			gluDisk(gluNewQuadric, 0, radius, 90, 1)
+			glPopMatrix	
+		)
+	)
+
 	drawBackground := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 		
-		backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
+		//backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
+		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
+
+		bMarker := ImageWrapper new("blue.png", 28, 24)	
+		bMarker drawImage(Board r17 x, Board r17 y)
+		gMarker := ImageWrapper new("green.png", 28, 24)	
+		gMarker drawImage(Board r18 x, Board r18 y)
+		yMarker := ImageWrapper new("yellow.png", 28, 24)	
+		yMarker drawImage(Board r19 x, Board r19 y)
+		mMarker := ImageWrapper new("magenta.png", 28, 24)	
+		mMarker drawImage(Board r20 x, Board r20 y)
+
 
 		glPushMatrix
 		glColor4d(0, 1, 0, 1)
@@ -288,6 +281,7 @@ EightMinEm := Object clone do(
 
 		//draw stuff here
 		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame; drawCards) else(drawPlayer)
+		if(self clickState == 1,drawRegions)
 		glFlush
 		glutSwapBuffers
 	)
@@ -333,8 +327,8 @@ EightMinEm := Object clone do(
 		glEnable(GL_LINE_SMOOTH)
 		glEnable(GL_BLEND)
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE)
-		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE)
+		//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
 		glutReshapeWindow(self width, self height)
 		glutMainLoop
 	)

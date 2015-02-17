@@ -102,7 +102,6 @@ EightMinEm := Object clone do(
 		return ((val + 1) * (height / 2))
 	)
 
-	//TODO: click updates the market
 	mouse := method(button, state, mx, my,
 		if (state == 0 and button == 0,
 			writeln("(",mx,",",self height - my,")")
@@ -118,7 +117,7 @@ EightMinEm := Object clone do(
 				px :=  (Market locations at(j)) x + 50
 				py :=  (Market locations at(j)) y - 90
 				if(((px - mx) abs < 100) and ((py - (self height - my)) abs < 180),
-					writeln("Clicked on card ", j + 1)
+					Market buyCard(j)
 				)
 			)
 			,
@@ -154,9 +153,7 @@ EightMinEm := Object clone do(
 
 		drawMarket
 	)
-
-	// TODO: Draw the market costs (0,1,1,2,2,3) above/beneath the cards
-	// TODO: Why is the first card not drawing?
+	
 	drawMarket := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(

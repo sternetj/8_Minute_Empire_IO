@@ -1,7 +1,6 @@
 #!/usr/bin/env io
 
 // TODO: Render Pieces/Castles/Starting location
-// TODO: Regions correspond to regions as pictured
 
 Region := Object clone do(
 	init := method (id,px,py,

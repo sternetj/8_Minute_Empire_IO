@@ -63,7 +63,7 @@ EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
 		self width := 910
-		self height := 1000
+		self height := 1024
 		self pieceIn := 0
 		self clickState := 0
 		//should be in game?
@@ -104,7 +104,7 @@ EightMinEm := Object clone do(
 			for(j, 0, Board regions size - 1,
 				px :=  (Board regions at(j)) x
 				py :=  (Board regions at(j)) y
-				if(((px - mx) abs < 10) and ((py - (self height - my)) abs < 10),
+				if(((px - mx) abs < 35) and ((py - (self height - my)) abs < 35),
 					writeln("In region ", j + 1)
 				)
 			),
@@ -161,6 +161,8 @@ EightMinEm := Object clone do(
 			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
 			glTranslated(Board regions at(j) x, Board regions at(j) y, 0)
 			gluDisk(gluNewQuadric, 0, radius, 90, 1)
+			glColor4d(0,1,0,1)
+			drawString(Board regions at(j) id)
 			glPopMatrix	
 		)
 	)
@@ -175,13 +177,13 @@ EightMinEm := Object clone do(
 		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
 
 		bMarker := ImageWrapper new("blue.png", 28, 24)	
-		bMarker drawImage(Board r17 x, Board r17 y)
+		//bMarker drawImage(Board r17 x, Board r17 y)
 		gMarker := ImageWrapper new("green.png", 28, 24)	
-		gMarker drawImage(Board r18 x, Board r18 y)
+		//gMarker drawImage(Board r18 x, Board r18 y)
 		yMarker := ImageWrapper new("yellow.png", 28, 24)	
-		yMarker drawImage(Board r19 x, Board r19 y)
+		//yMarker drawImage(Board r19 x, Board r19 y)
 		mMarker := ImageWrapper new("magenta.png", 28, 24)	
-		mMarker drawImage(Board r20 x, Board r20 y)
+		//mMarker drawImage(Board r20 x, Board r20 y)
 
 
 		glPushMatrix

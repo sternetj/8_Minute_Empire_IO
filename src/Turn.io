@@ -76,6 +76,7 @@ Market show
 Market buyCard(3) 
 **/
 
+/*
 TestPlayer := Player clone
 TestPlayer init
 c12 := Card clone 
@@ -123,6 +124,7 @@ write("score = ", TestPlayer getModifiedScore(0),"\n")
 smab affect(TestPlayer)
 write("After ffability: ", TestPlayer asString, "\n")
 write("score = ", TestPlayer getModifiedScore(0),"\n")
+*/
 
 /* Action Tests *
 TestActionPlayer := Player clone

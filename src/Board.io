@@ -55,51 +55,50 @@ Region := Object clone do(
 )
 
 Board := Object clone do(
-	//piece := Point clone init(-0.5,0.5)
 	r1 := Region clone
-	r1 init("r1",311,977)
+	r1 init("r1",311,47)
 	r2 := Region clone
-	r2 init("r2",299,903)
+	r2 init("r2",299,121)
 	r3 := Region clone
-	r3 init("r3",377,837)
+	r3 init("r3",377,187)
 	r4 := Region clone
-	r4 init("r4",483,877)
+	r4 init("r4",483,147)
 	r5 := Region clone
-	r5 init("r5",399,702)
+	r5 init("r5",399,322)
 	r6 := Region clone
-	r6 init("r6",348,659)
+	r6 init("r6",348,365)
 	r7 := Region clone
-	r7 init("r7",510,634)
+	r7 init("r7",510,390)
 	r8 := Region clone
-	r8 init("r8",449,568)
+	r8 init("r8",449,456)
 	r9 := Region clone
-	r9 init("r9",525,525)
+	r9 init("r9",525,499)
 	r10 := Region clone
-	r10 init("r10",396,497)
+	r10 init("r10",396,527)
 	r11 := Region clone
-	r11 init("r11",387,426)
+	r11 init("r11",387,598)
 	r12 := Region clone
-	r12 init("r12",707,678)
+	r12 init("r12",707,346)
 	r13 := Region clone
-	r13 init("r13",701,567)
+	r13 init("r13",701,457)
 	r14 := Region clone
-	r14 init("r14",753,451)
+	r14 init("r14",753,573)
 	r15 := Region clone
-	r15 init("r15",240,402)
+	r15 init("r15",240,622)
 	r16 := Region clone
-	r16 init("r16",114,441)
+	r16 init("r16",114,583)
 	r17 := Region clone
-	r17 init("r17",220,506)
+	r17 init("r17",220,518)
 	r18 := Region clone
-	r18 init("r18",101,543)
+	r18 init("r18",101,481)
 	r19 := Region clone
-	r19 init("r19",194,607)
+	r19 init("r19",194,417)
 	r20 := Region clone
-	r20 init("r20",113,651)
+	r20 init("r20",113,373)
 	r21 := Region clone
-	r21 init("r21",162,685)
+	r21 init("r21",162,339)
 	r22 := Region clone
-	r22 init("r22",562,942)
+	r22 init("r22",562,82)
 
 	r1 addNeighbor(r2)
 	r1 addNeighbor(r4)

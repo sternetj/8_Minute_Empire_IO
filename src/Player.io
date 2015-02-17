@@ -3,7 +3,7 @@
 
 Player := Object clone do(
 
-	init := method(startCoins,
+	init := method(startCoins,imgName,
 		self coins := 9
 		self moveMod := 0
 		self armyMod := 0
@@ -15,6 +15,7 @@ Player := Object clone do(
 		self bothmount := 0;
 		self percoins := 0;
 		self perfly := 0;
+		self icon := ImageWrapper new(imgName, 28, 24)	
 	)
 
 	asString := method(

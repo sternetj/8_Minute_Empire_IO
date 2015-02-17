@@ -62,7 +62,7 @@ ImageWrapper := Object clone do(
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
-		self width := 910
+		self width := 1024
 		self height := 1024
 		self pieceIn := 0
 		self clickState := 0
@@ -75,6 +75,10 @@ EightMinEm := Object clone do(
 		self moveIcon := ImageWrapper new("moveIco.png", 43, 17)
 		self flightIcon := ImageWrapper new("flightIco.png", 30, 17)
 		self elixirIcon := ImageWrapper new("elixirIco.png", 23, 23)
+		self bMarker := ImageWrapper new("blue.png", 28, 24)	
+		self gMarker := ImageWrapper new("green.png", 28, 24)	
+		self yMarker := ImageWrapper new("yellow.png", 28, 24)	
+		self mMarker := ImageWrapper new("magenta.png", 28, 24)	
 		self fontSize := 16
 	)
 
@@ -107,7 +111,15 @@ EightMinEm := Object clone do(
 				if(((px - mx) abs < 35) and ((py - (self height - my)) abs < 35),
 					writeln("In region ", j + 1)
 				)
-			),
+			)
+			for(j, 0, Market locations size - 1,
+				px :=  (Market locations at(j)) x + 50
+				py :=  (Market locations at(j)) y - 90
+				if(((px - mx) abs < 100) and ((py - (self height - my)) abs < 180),
+					writeln("Clicked on card ", j + 1)
+				)
+			)
+			,
 			self clickState = 0
 		)	
 		display
@@ -120,7 +132,8 @@ EightMinEm := Object clone do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 
-		boardImg drawImage(normalToPointX(0), normalToPointY(0.25))
+		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
+		//boardImg drawImage(normalToPointX(0), normalToPointY(0.25))
 
 		if (self width < 905,
 			self width = 905
@@ -128,18 +141,27 @@ EightMinEm := Object clone do(
 		if (self height < 900,
 			self height = 900
 		)
+
+		drawMarket
 	)
 
 	// TODO: Draw the market costs (0,1,1,2,2,3) above/beneath the cards
 	// TODO: Why is the first card not drawing?
-	drawCards := method(
+	drawMarket := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 		for(i,0,5,
-			write(i, ": ", Market available at(i), "\n")
-			ImageWrapper new(Market available at(i) image, 100, 180) drawImage(normalToPointX(-.95+i*0.38), normalToPointY(-0.78))
+			img := ImageWrapper new(Market available at(i) image, 100, 180) 
+			x := img width / 2 + i * 170
+			y := img height / 2 + 30
+			img drawImage(x,y)
+			glPushMatrix
+			glTranslated(x + 20,10,0)
+			glColor4d(0,1,0,1)
+			drawString(Market costs at(i) asString)
+			glPopMatrix
 		)
 	)
 
@@ -165,6 +187,16 @@ EightMinEm := Object clone do(
 			drawString(Board regions at(j) id)
 			glPopMatrix	
 		)
+		for(j, 0, Market locations size -1,
+			glPushMatrix
+			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
+			glTranslated(Market locations at(j) x, Market locations at(j) y, 0)
+			glRectd(0, 65, 160, -180)
+			glTranslated(70, -70, 0)
+			glColor4d(0,1,0,1)
+			drawString(Market locations at(j) id)
+			glPopMatrix
+		)
 	)
 
 	drawBackground := method(
@@ -173,8 +205,8 @@ EightMinEm := Object clone do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 		
-		//backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
-		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
+		backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
+		//boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
 
 		bMarker := ImageWrapper new("blue.png", 28, 24)	
 		//bMarker drawImage(Board r17 x, Board r17 y)
@@ -184,7 +216,6 @@ EightMinEm := Object clone do(
 		//yMarker drawImage(Board r19 x, Board r19 y)
 		mMarker := ImageWrapper new("magenta.png", 28, 24)	
 		//mMarker drawImage(Board r20 x, Board r20 y)
-
 
 		glPushMatrix
 		glColor4d(0, 1, 0, 1)
@@ -282,7 +313,7 @@ EightMinEm := Object clone do(
 		glLoadIdentity
 
 		//draw stuff here
-		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame; drawCards) else(drawPlayer)
+		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame) else(drawPlayer)
 		if(self clickState == 1,drawRegions)
 		glFlush
 		glutSwapBuffers

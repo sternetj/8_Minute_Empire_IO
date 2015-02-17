@@ -46,6 +46,19 @@ Turn := Object clone do(
 Market := Object clone do(
     init := method(
 		self costs := list(0, 1, 1, 2, 2, 3)
+		r1 := Region clone
+		r1 init("m1",0,210)
+		r2 := Region clone
+		r2 init("m2",170,210)
+		r3 := Region clone
+		r3 init("m3",340,210)
+		r4 := Region clone
+		r4 init("m4",510,210)
+		r5 := Region clone
+		r5 init("m5",680,210)
+		r6 := Region clone
+		r6 init("m6",850,210)
+		self locations := list(r1,r2,r3,r4,r5,r6)
 		Deck shuffle
 		self available := List clone
 		for(i, 1, 6, available append(Deck dealCard))

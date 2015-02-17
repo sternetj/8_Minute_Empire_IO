@@ -29,7 +29,7 @@ ElixirAbility := AbstractAbility clone do(
 		self nE := n
 	)
 	affect := method(Player,
-		Player elixirs = ((Player elixirs) + nE)
+		Player elixirs = (Player elixirs + self nE)
 	)
 )
 
@@ -43,8 +43,35 @@ TreasuryAbility := AbstractAbility clone do(
 // TODO : function pointers aren't the way to do this
 // anybody have a better idea?
 ScoreModifierAbility := AbstractAbility clone do(
-	affect := method(Player, scoreFn,
-		Player scoreModifiers append(scoreFn)
+	//cat := nil
+	init := method(cata, self cat := cata)
+
+	affect := method(Player,
+		Player scoreModifiers append( self cat )
+	)
+)
+
+ScoreModifierAbilitynoble := AbstractAbility clone do(
+	affect := method(Player,
+		Player allnoble := 1;
+	)
+)
+
+ScoreModifierAbilitycoin := AbstractAbility clone do(
+	affect := method(Player,
+		Player percoins := 1;
+	)
+)
+
+ScoreModifierAbilitymount := AbstractAbility clone do(
+	affect := method(Player,
+		Player bothmount := 1;
+	)
+)
+
+ScoreModifierAbilityfly := AbstractAbility clone do(
+	affect := method(Player,
+		Player perfly := 1;
 	)
 )
 

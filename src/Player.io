@@ -4,24 +4,42 @@
 Player := Object clone do(
 
 	init := method(startCoins,
-		self coins := startCoins
+		self coins := 9
 		self moveMod := 0
 		self armyMod := 0
 		self flyingMod := 0 //Can have > 3 (one card for VP, can only reduce cost to 1 though)
 		self elixirs := 0
 		self scoreModifiers := list clone
 		self cards := list clone
+		self allnoble := 0;
+		self bothmount := 0;
+		self percoins := 0;
+		self perfly := 0;
 	)
 
 	asString := method(
-		"C: " .. coins .. " MM: " .. moveMod .. " AM: " .. armyMod .. " FM: " .. flyingMod .. " Elxr: " .. elixirs
+		"C: " .. coins .. " MM: " .. moveMod .. " AM: " .. armyMod .. " FM: " .. flyingMod .. " Elxr: " .. elixirs .."\n ALN: " .. allnoble .. " BM: ".. bothmount .. " PC: ".. percoins .. " PF: ".. perfly .. " SM: " .. scoreModifiers
 	)
 
 	// TODO: find a way to lazy evaluate functions
 	// or, stop using functors
 	getModifiedScore := method(score,
-		foreach(mod, score = score + mod)
+		if(perfly == 1, score = score + flyingMod)
+
+		if(percoins == 1, score = score + (self coins / 3)*percoins)
+
+		if(allnoble == 1, self k := 0; 
+		self cards foreach(i,v, if(v category == "noble", self k = self k + 1) ) if (self k == 3, score = score + 4))
+
+		if(bothmount == 1, self k := 0; 
+		self cards foreach(i,v, 
+		if (v category == "mountain", self k = self k + 1) ) 
+		if (self k == 3, score = score +3))
+
+		self scoreModifiers foreach(i, mod, self cards foreach(j, card, if (card category == mod, score = score +1)))
 		score
+	
+
 	)
 
 	getFlightCost := method(

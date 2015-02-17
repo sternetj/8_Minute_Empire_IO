@@ -85,7 +85,7 @@ Deck := Object clone do(
 
         
         // TODO : Get better card scans (w/ consistent sizes)
-        // TODO : Score Modifiers
+        // DONE : Score Modifiers
         // TODO : Deal w/ AndOr
 
                 c0 := Card clone 
@@ -93,7 +93,8 @@ Deck := Object clone do(
         cards append(c0)
 
         c1 := Card clone 
-        fn1 := ScoreModifierAbility clone
+        fn1 := ScoreModifierAbility clone 
+        fn1 init("ancient")
         /*fn1 init(method(Player,
                 pts := 0
                 Player cards foreach(c, if(c category == "ancient", pts = (pts + 1)))
@@ -124,13 +125,8 @@ Deck := Object clone do(
         cards append(c5)
 
         c6 := Card clone
-        fn6 := ScoreModifierAbility clone
-        /*fn6 init(method(Player,
-                pts := 0
-                Player cards foreach(c, if(c category == "arcane", pts = (pts + 1)))
-                pts
-            )
-        )*/
+        fn6 := ScoreModifierAbility clone 
+        fn6 init("arcane")
         c6 setslots("arcane", m3, fn6, "arcanetemple.png")
         cards append(c6)
 
@@ -165,11 +161,7 @@ Deck := Object clone do(
         cards append(c12)
 
         c13 := Card clone 
-        fn13 := ScoreModifierAbility clone
-        /*fn13 init(method(Player,
-                Player flyingMod
-            )
-        )*/
+        fn13 := ScoreModifierAbilityfly clone
         c13 setslots("cursed", ca, fn13, "cursedtower.png")
         cards append(c13)
 
@@ -194,11 +186,7 @@ Deck := Object clone do(
         cards append(c17)
 
         c18 := Card clone 
-        fn18 := ScoreModifierAbility clone
-        /*fn18 init(method(Player,
-                ((Player coins) / 3) floor
-            )
-        )*/
+        fn18 := ScoreModifierAbilitycoin clone
         c18 setslots("dire", m2, fn18, "direogre.png")
         cards append(c18)
 
@@ -221,27 +209,17 @@ Deck := Object clone do(
         cards append(c22)  
 
         c23 := Card clone 
-        fn23 := ScoreModifierAbility clone
-        /*fn23 init(method(Player,
-                pts := 0
-                Player cards foreach(c, if(c category == "cursed", pts = (pts + 1)))
-                pts
-            )
-        )*/
-        //Doesn't count itself
+        fn23 := ScoreModifierAbility clone 
+        fn23 init( "cursed")
+
         c23 setslots("graveyard", a4, fn23, "graveyard.png")
         cards append(c23)       
 
         c24 := Card clone
         ao24 := AndOrAction clone
         ao24 init(a2, m3, "or")
-        fn24 := ScoreModifierAbility clone
-        /*fn24 init(method(Player,
-                pts := 0
-                Player cards foreach(c, if(c category == "forest", pts = (pts + 1)))
-                pts
-            )
-        )*/ 
+        fn24 := ScoreModifierAbility 
+        fn24 clone init("forest")
         //Doesn't count itself
         c24 setslots("lake", ao24, fn24, "lake.png")
         cards append(c24) 
@@ -249,13 +227,9 @@ Deck := Object clone do(
         c25 := Card clone 
         ao25 := AndOrAction clone
         ao25 init(a2, m3, "or")
-        fn25 := ScoreModifierAbility clone
-        /*fn25 init(method(Player,
-                count := 0
-                Player cards foreach(c, if(c category == "mountain", count = (count + 1)))
-                if(count == 2, 3, 0)
-            )
-        )*/ 
+        fn25 := ScoreModifierAbility clone 
+        fn25 init("mountain")
+
         c25 setslots("mountain", ao24, fn24, "mountaindwarf.png")
         cards append(c25) 
 
@@ -276,24 +250,13 @@ Deck := Object clone do(
         c29 := Card clone
         ao29 := AndOrAction clone
         ao29 init(a3, da, "and")
-        fn29 := ScoreModifierAbility clone
-        /*fn29 init(method(Player,
-                pts := 0
-                Player cards foreach(c, if(c category == "night", pts = (pts + 1)))
-                pts
-            )
-        )*/ 
+        fn29 := ScoreModifierAbility clone 
+        fn29 init("night")
         c29 setslots("night", ao29, fn29, "nightwizard.png")
         cards append(c29) 
 
         c30 := Card clone
-        fn30 := ScoreModifierAbility clone
-        /*fn30 init(method(Player,
-                count := 0
-                Player cards foreach(c, if(c category == "noble", count = (count + 1)))
-                if(count == 3, 4, 0)
-            )
-        )*/ 
+        fn30 := ScoreModifierAbilitynoble clone
         c30 setslots("noble", a3, fn30, "noblehills.png")
         cards append(c30)
 
@@ -310,13 +273,8 @@ Deck := Object clone do(
         cards append(c32)     
 
         c33 := Card clone 
-        fn33 := ScoreModifierAbility clone
-        /*fn33 init(method(Player,
-                pts := 0
-                Player cards foreach(c, if(c category == "dire", pts = (pts + 1)))
-                pts
-            )
-        )*/ 
+        fn33 := ScoreModifierAbility clone 
+        fn33 init("dire")
         //Doesn't count itself
         c33 setslots("stronghold", ca, fn33, "stronghold.png")
         cards append(c33)

@@ -304,7 +304,7 @@ EightMinEm := Object clone do(
 
 		//Draw Modifiers
 		glPushMatrix
-		glTranslated(self width - 50, (self height - 20) - (150 * idx), 0)
+		glTranslated(self width - 50, (self height - 20) - (280 * idx), 0)
 		coinIcon drawImage(0,0)
 		armyIcon drawImage(3,-23)
 		moveIcon drawImage(-10,-43)
@@ -321,6 +321,12 @@ EightMinEm := Object clone do(
 		drawString(player flyingMod asString)
 		glTranslated(0, -24, 0)
 		drawString(player elixirs asString)
+
+		//Draw Cards
+		player cards foreach(i, c,
+			ImageWrapper new(c image, 100,180) drawImage(-200 - (i * 30),-50)
+		)
+
 		glPopMatrix
 	)
 

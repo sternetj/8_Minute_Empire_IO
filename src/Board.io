@@ -1,15 +1,23 @@
 #!/usr/bin/env io
 
 // TODO: Render Pieces/Castles/Starting location
-
 Region := Object clone do(
-	init := method (id,px,py,
+	init := method (id,px,py,cont,
 		self id := id
 		self x := px
 		self y := py
+		self continent := cont
 		self neighbors := List clone
+		self armies := list(0, 0, 0,0)
+		self castles := list(0, 0, 0, 0)
 	)
-	
+
+	addcastle := method(playnum,
+	castles atPut(playnum, castles at(playnum) + 1))
+
+	addarmy := method(playnum,
+	armies atPut(playnum, armies at(playnum) + 1))
+
 	addNeighbor := method(r,
 		self neighbors append(r)
 	)
@@ -55,49 +63,49 @@ Region := Object clone do(
 
 Board := Object clone do(
 	r1 := Region clone
-	r1 init("r1",311,47)
+	r1 init("r1",311,47,"N")
 	r2 := Region clone
-	r2 init("r2",299,121)
+	r2 init("r2",299,121,"N")
 	r3 := Region clone
-	r3 init("r3",377,187)
+	r3 init("r3",377,187,"N")
 	r4 := Region clone
-	r4 init("r4",483,147)
+	r4 init("r4",483,147,"N")
 	r5 := Region clone
-	r5 init("r5",399,322)
+	r5 init("r5",399,322,"S")
 	r6 := Region clone
-	r6 init("r6",348,365)
+	r6 init("r6",348,365,"S")
 	r7 := Region clone
-	r7 init("r7",510,390)
+	r7 init("r7",510,390,"S")
 	r8 := Region clone
-	r8 init("r8",449,456)
+	r8 init("r8",449,456,"S")
 	r9 := Region clone
-	r9 init("r9",525,499)
+	r9 init("r9",525,499,"S")
 	r10 := Region clone
-	r10 init("r10",396,527)
+	r10 init("r10",396,527,"S")
 	r11 := Region clone
-	r11 init("r11",387,598)
+	r11 init("r11",387,598,"S")
 	r12 := Region clone
-	r12 init("r12",707,346)
+	r12 init("r12",707,346,"E")
 	r13 := Region clone
-	r13 init("r13",701,457)
+	r13 init("r13",701,457,"E")
 	r14 := Region clone
-	r14 init("r14",753,573)
+	r14 init("r14",753,573,"E")
 	r15 := Region clone
-	r15 init("r15",240,622)
+	r15 init("r15",240,622,"W")
 	r16 := Region clone
-	r16 init("r16",114,583)
+	r16 init("r16",114,583,"W")
 	r17 := Region clone
-	r17 init("r17",220,518)
+	r17 init("r17",220,518,"W")
 	r18 := Region clone
-	r18 init("r18",101,481)
+	r18 init("r18",101,481,"W")
 	r19 := Region clone
-	r19 init("r19",194,417)
+	r19 init("r19",194,417,"W")
 	r20 := Region clone
-	r20 init("r20",113,373)
+	r20 init("r20",113,373,"W")
 	r21 := Region clone
-	r21 init("r21",162,339)
+	r21 init("r21",162,339,"W")
 	r22 := Region clone
-	r22 init("r22",562,82)
+	r22 init("r22",562,82,"N")
 
 	r1 addNeighbor(r2)
 	r1 addNeighbor(r4)
@@ -156,25 +164,3 @@ Board := Object clone do(
 
 	regions := list(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15,r16,r17,r18,r19,r20,r21,r22)
 )
-
-writeln("Path between r1 and r2: ", Board r1 getPath(Board r2))
-writeln("Path between r1 and r3: ", Board r1 getPath(Board r3))
-writeln("Path between r1 and r4: ", Board r1 getPath(Board r4))
-writeln("Path between r1 and r5: ", Board r1 getPath(Board r5))
-writeln("Path between r1 and r6: ", Board r1 getPath(Board r6))
-writeln("Path between r1 and r7: ", Board r1 getPath(Board r7))
-writeln("Path between r1 and r8: ", Board r1 getPath(Board r8))
-writeln("Path between r1 and r9: ", Board r1 getPath(Board r9))
-writeln("Path between r1 and r10: ", Board r1 getPath(Board r10))
-writeln("Path between r1 and r11: ", Board r1 getPath(Board r11))
-writeln("Path between r1 and r12: ", Board r1 getPath(Board r12))
-writeln("Path between r1 and r13: ", Board r1 getPath(Board r13))
-writeln("Path between r1 and r14: ", Board r1 getPath(Board r14))
-writeln("Path between r1 and r15: ", Board r1 getPath(Board r15))
-writeln("Path between r1 and r16: ", Board r1 getPath(Board r16))
-writeln("Path between r1 and r17: ", Board r1 getPath(Board r17))
-writeln("Path between r1 and r18: ", Board r1 getPath(Board r18))
-writeln("Path between r1 and r19: ", Board r1 getPath(Board r19))
-writeln("Path between r1 and r20: ", Board r1 getPath(Board r20))
-writeln("Path between r1 and r21: ", Board r1 getPath(Board r21))
-writeln("Path between r1 and r22: ", Board r1 getPath(Board r22))

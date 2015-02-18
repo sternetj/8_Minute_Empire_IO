@@ -55,10 +55,8 @@ ImageWrapper := Object clone do(
 	)
 )
 
-
 //TODO: try to keep Game, Board, and OpenGL logic in their seperate files
 //TODO: update the game object as input is processed
-//TODO: get pictures for starting location and castles
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
@@ -104,7 +102,7 @@ EightMinEm := Object clone do(
 	mouse := method(button, state, mx, my,
 		self mouseX = mx
 		self mouseY = height - my
-		if (state == 0 and button == 0,
+		if (inGame and state == 0 and button == 0,
 			writeln("(",mx,",",self height - my,")")
 			self clickState = 1
 			if(Game gameState == "Action",
@@ -181,18 +179,56 @@ EightMinEm := Object clone do(
 			glPopMatrix
 		)
 	)
+		bMarker := ImageWrapper new("blue.png", 28, 24)	
+		gMarker := ImageWrapper new("green.png", 28, 24)	
+		cMarker := ImageWrapper new("yellow.png", 28, 24)
+		mMarker := ImageWrapper new("magenta.png", 28, 24)	
+
+		bcMarker := ImageWrapper new("casbluesmall.png", 42, 42)	
+		gcMarker := ImageWrapper new("casgreensmall.png", 42, 42)	
+		rcMarker := ImageWrapper new("casmagsmall.png", 42, 42)
+		ccMarker := ImageWrapper new("cascyansmall.png", 42, 44)	
+		//mMarker drawImage(Board r20 x, Board r20 y)
+
+	armyimg := list(gMarker,bMarker, mMarker,cMarker  )
+	casimg := list(gcMarker, bcMarker,
+		rcMarker, ccMarker)
 
 	drawRegions := method(
 		if(clickState == 1,
 			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
 		)
-		castle := ImageWrapper new("casorg.png", 42, 42 )
 		for(j, 0, Board regions size - 1,
 			radius := 10
+			xcom := Board regions at(j) x
+			ycom := height - (Board regions at(j) y)
+			(Color clone set(1, 1, 1, 1)) glColor
+			Board regions at(j) armies foreach( i, v, if (v>0, 
+				glPushMatrix;
+				glTranslated(xcom + 30 * (3.141*i/4) cos ,
+				 ycom + 30 * (3.141*i/4) sin, 0);
+				armyimg at(i) drawImage(); 
+				(Color clone set(0, 0, 0, 1)) glColor
+				self fontSize = fontSize +4
+				drawString(v asString);
+				(Color clone set(1, 1, 1, 1)) glColor
+				self fontSize = fontSize -4
+				drawString(v asString);
+				glPopMatrix
+				))
+			numcas := Board regions at(j) castles select(>0) size
+			inc := 0
+			Board regions at(j) castles foreach( i, v, if (v>0, 
+				glPushMatrix;
+				glTranslated(xcom + 30 * (-3.141*(inc+1)/numcas) cos ,
+				 ycom + 30 * (-3.141*(inc+1)/numcas) sin, 0);
+				casimg at(i) drawImage(); 
+				glPopMatrix;
+				inc := inc + 1
+				))
 			glPushMatrix
-			castle drawImage(Board regions at(j) x, height - (Board regions at(j) y))
 			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
-			glTranslated(Board regions at(j) x, height - (Board regions at(j) y), 0)
+			glTranslated(xcom, ycom, 0)
 			gluDisk(gluNewQuadric, 0, radius, 90, 1)
 			glColor4d(0,1,0,1)
 			drawString(Board regions at(j) id)
@@ -217,17 +253,6 @@ EightMinEm := Object clone do(
 		)
 		
 		backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
-		//boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
-
-		bMarker := ImageWrapper new("blue.png", 28, 24)	
-		//bMarker drawImage(Board r17 x, Board r17 y)
-		gMarker := ImageWrapper new("green.png", 28, 24)	
-		//gMarker drawImage(Board r18 x, Board r18 y)
-		yMarker := ImageWrapper new("yellow.png", 28, 24)	
-		//yMarker drawImage(Board r19 x, Board r19 y)
-		mMarker := ImageWrapper new("magenta.png", 28, 24)	
-		//mMarker drawImage(Board r20 x, Board r20 y)
-
 
 		glPushMatrix
 		glColor4d(0, 1, 0, 1)
@@ -241,10 +266,7 @@ EightMinEm := Object clone do(
 
 	)
 
-	// TODO: Parameterize for any given Player
 	// TODO: Stack/move cards based on how many
-	// TODO: Draw all 4 players states at each edge of the screen, 
-	// maybe just use a rotated matrix?
 	drawPlayer := method(idx,player,
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
@@ -270,7 +292,6 @@ EightMinEm := Object clone do(
 		drawString(player flyingMod asString)
 		glTranslated(0, -24, 0)
 		drawString(player elixirs asString)
-
 
 		//Draw Cards
 		player cards foreach(i, c,
@@ -311,17 +332,13 @@ EightMinEm := Object clone do(
 
 	keyboard := method(key, x, y,
 		if (inGame not,
-			//self gameObj = Game clone
 			if(key asCharacter == "2", 
-				//self gameState = "Play" 
 				Game newGame(2)
 			)
         	if(key asCharacter == "3", 
-        		//self gameState = "Play"
         		Game newGame(3)
         	)
         	if(key asCharacter == "4", 
-        		//self gameState = "Play"
         		Game newGame(4)
         	)
         	inGame = true
@@ -362,16 +379,6 @@ EightMinEm := Object clone do(
 )
 
 EightMinEm do(
-	//writeln("launchPath: ", System launchPath)
 	Game init()
-		// setup test drawPlayer 
-	// cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
-	// testPlayer := Player clone
-	// testPlayer init(14, "blue.png",Color clone set(1,0,1,1))
-	// cardList foreach(c,
-	// 	if (c!=nil, testPlayer cards append(c)))
-	// writeln("\n")
-	// testPlayer cards foreach(c, 
-	// 	writeln(c image); c ability affect(testPlayer))
 	run
 )

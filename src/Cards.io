@@ -278,6 +278,8 @@ Deck := Object clone do(
         //Doesn't count itself
         c33 setslots("stronghold", ca, fn33, "stronghold.png")
         cards append(c33)
+
+        cards foreach(v, writeln(v image))
     )
     init
     shuffle  := method(cards shuffle)

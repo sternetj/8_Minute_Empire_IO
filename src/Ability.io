@@ -43,7 +43,7 @@ TreasuryAbility := AbstractAbility clone do(
 // TODO : function pointers aren't the way to do this
 // anybody have a better idea?
 ScoreModifierAbility := AbstractAbility clone do(
-	//cat := nil
+	cat := nil
 	init := method(cata, self cat := cata)
 
 	affect := method(Player,

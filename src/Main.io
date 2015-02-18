@@ -243,8 +243,11 @@ EightMinEm := Object clone do(
 		cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
 		testPlayer := Player clone
 		testPlayer init(14, "blue.png")
-		cardList foreach(c, testPlayer cards append(c))
-		testPlayer cards foreach(c, c ability affect(testPlayer))
+		cardList foreach(c,
+			if (c!=nil, testPlayer cards append(c)))
+		writeln("\n")
+		testPlayer cards foreach(c, 
+			writeln(c image); c ability affect(testPlayer))
 
 		//Draw Cards
 		testPlayer cards foreach(i, c,
@@ -256,7 +259,7 @@ EightMinEm := Object clone do(
 		glTranslated(865, 105, 0)
 		coinIcon drawImage(0,0)
 		armyIcon drawImage(3,-23)
-		moveIcon drawImage(-10,-43)
+		moveIcon drawImage(-10,-43)5
 		flightIcon drawImage(-3,-63)
 		elixirIcon drawImage(0,-88)
 		glPopMatrix

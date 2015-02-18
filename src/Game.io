@@ -11,48 +11,57 @@ Game := Object clone do(
 	players := nil
 	board := nil
 	gameState := nil
-	currentTurn := nil
+	currentRound := nil
 	startingPlayer := nil
 	activePlayer := nil
-	
+	activeTurn := nil
+	message := "Start game"
+
 	init := method(
 		self players := list()
 		self board := Board
-		self gameState := "Start"
-		self currentTurn := 0
+		self gameState := "Buy"
+		self currentRound := 1
 	)
 
 	newGame := method(nPlayers,
-		coins := if(nPlayers == 2) then(
-					14
-				 )elseif(nPlayers == 3) then(
-				 	11
-				 )else(
-				 	9
-				 )
+		coins := if(nPlayers == 2, 14, if(nPlayers == 3, 11, 9))
 
-		images := list("green.png", "blue.png", "magenta.png", "yellow.png")
+		images := list("green.png", "blue.png", "red.png", "cyan.png")
+		green := Color clone set(0, 1, 0, 1)
+		blue := Color clone set(0, 0, 1, 1)
+		red := Color clone set(1, 0, 0, 1)
+		cyan := Color clone set(0, 1, 1, 1)
+		colors := list(green, blue, red, cyan)
+		names := list("Emerald Fairy Queen", "Azure Knight", "Crimson Sorceress", "Cyan Bandit King")
 
-		for(i, 0, nPlayers, 
-			p := Player clone 
-			p init(coins, images at(i))
+		for(i, 0, nPlayers - 1, 
+			p := Player clone init(names at(i), coins, images at(i), colors at(i))
 			self players append(p)
 		)
-		self maxTurns := if(nPlayers == 2) then(
-							13
-						 )elseif(nPlayers == 3) then(
-						 	10
-						 )else(
-						 	8
-						 )
+		self maxRounds := if(nPlayers == 2, 13, if(nPlayers == 3,10,8))
 
 		// In the real game players bid for first player
 		// but we didn't want to have hidden information, 
 		// so we just choose randomly
-		self startingPlayer := players at(Random value(0,nPlayers) floor)
+		self startingPlayer := Random value(0,nPlayers) floor
 		self activePlayer := startingPlayer
-		gameState = "Play"
+		self activeTurn := Turn clone init(self players at(activePlayer))
+		self message = self players at(activePlayer) .. " buy a card"
 	)
+
+	newTurn := method(
+		self activePlayer = (self activePlayer + 1) % (self players size)
+		if (self activePlayer == self startingPlayer, 
+			self currentRound = self currentRound + 1
+		)
+		self activeTurn := Turn clone init(self players at(activePlayer))
+		self message = self players at(activePlayer) .. " buy a card"
+	)
+
+	// getMessage := method(
+	// 	self players at(activePlayer) icon image asString) println 
+	// )
 
 	// TODO: Game Loop!
 )

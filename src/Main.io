@@ -62,10 +62,11 @@ ImageWrapper := Object clone do(
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
-		self width := 1024
+		self width := 1600
 		self height := 1024
 		self pieceIn := 0
 		self clickState := 0
+		self inGame := false
 		self backgroundImg := ImageWrapper new("cover.png", 331, 500)
 		self boardImg := ImageWrapper new("map.png", 905, 709)
 		self coinIcon := ImageWrapper new("coinsIco.png", 23, 23)
@@ -106,20 +107,24 @@ EightMinEm := Object clone do(
 		if (state == 0 and button == 0,
 			writeln("(",mx,",",self height - my,")")
 			self clickState = 1
-			for(j, 0, Board regions size - 1,
-				px :=  (Board regions at(j)) x
-				py :=  (Board regions at(j)) y
-				if(((px - mx) abs < 35) and ((py - (self height - my)) abs < 35),
-					writeln("In region ", j + 1)
+			if(Game gameState == "Action",
+				for(j, 0, Board regions size - 1,
+					px :=  (Board regions at(j)) x
+					py :=  (Board regions at(j)) y
+					if(((px - mx) abs < 35) and ((py - my) abs < 35),
+						writeln("In region ", j + 1)
+					)
 				)
-			)
-			for(j, 0, Market locations size - 1,
-				px :=  (Market locations at(j)) x + 50
-				py :=  (Market locations at(j)) y - 90
-				if(((px - mx) abs < 100) and ((py - (self height - my)) abs < 180),
-					Market buyCard(j)
+			,
+			if(Game gameState == "Buy",
+				for(j, 0, Market locations size - 1,
+					px :=  (Market locations at(j)) x + 50
+					py :=  (Market locations at(j)) y - 90
+					if(((px - mx) abs < 100) and ((py - (self height - my)) abs < 180),
+						Game activeTurn takeTurn(j)
+					)
 				)
-			)
+			))
 			,
 			self clickState = 0
 		)	
@@ -140,6 +145,12 @@ EightMinEm := Object clone do(
 		)
 
 		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
+		Game players foreach(i,p, drawPlayer(i,p))
+		glPushMatrix
+		glTranslated(1100,100,0)
+		glColor4d(1,1,1,1)
+		drawString(Game message)
+		glPopMatrix
 	)
 	
 	drawMarket := method(
@@ -186,9 +197,8 @@ EightMinEm := Object clone do(
 		rcMarker, ccMarker)
 
 	drawRegions := method(
-
 		if(clickState == 1,
-			Game players at(Game currentTurn) icon drawImage(mouseX,mouseY)
+			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
 		)
 		for(j, 0, Board regions size - 1,
 			radius := 10
@@ -273,66 +283,67 @@ EightMinEm := Object clone do(
 	// TODO: Stack/move cards based on how many
 	// TODO: Draw all 4 players states at each edge of the screen, 
 	// maybe just use a rotated matrix?
-	drawPlayer := method(
+	drawPlayer := method(idx,player,
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 
-		/* setup test drawPlayer */
-		cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
-		testPlayer := Player clone
-		testPlayer init(14, "blue.png")
-		cardList foreach(c,
-			if (c!=nil, testPlayer cards append(c)))
-		writeln("\n")
-		testPlayer cards foreach(c, 
-			writeln(c image); c ability affect(testPlayer))
-
 		//Draw Cards
-		testPlayer cards foreach(i, c,
-			ImageWrapper new(c image, 100, 180) drawImage(normalToPointX(-.4 + .4 * i), normalToPointY(-1.15))
-		)
+		//testPlayer cards foreach(i, c,
+		//	ImageWrapper new(c image, 100, 180) drawImage(normalToPointX(-.4 + .4 * i), normalToPointY(-1.15))
+		//)
 
 		//Draw Modifiers
 		glPushMatrix
-		glTranslated(865, 105, 0)
+		glTranslated(self width - 50, (self height - 20) - (150 * idx), 0)
 		coinIcon drawImage(0,0)
 		armyIcon drawImage(3,-23)
-		moveIcon drawImage(-10,-43)5
+		moveIcon drawImage(-10,-43)
 		flightIcon drawImage(-3,-63)
 		elixirIcon drawImage(0,-88)
+		glColor4d(player color red, player color green, player color blue, player color alpha)
+		glTranslated(15,-5,0)
+		drawString(player coins asString)
+		glTranslated(0, -20, 0)
+		drawString("+" .. player armyMod asString)
+		glTranslated(0, -21, 0)
+		drawString("+" .. player moveMod asString)
+		glTranslated(0, -22, 0)
+		drawString(player flyingMod asString)
+		glTranslated(0, -24, 0)
+		drawString(player elixirs asString)
 		glPopMatrix
 
-		glPushMatrix
-		glColor4d(0, 1, 0, 1)
-		glTranslated(880, 100, 0)
-		drawString(testPlayer coins asString)
-		glPopMatrix
+		// glPushMatrix
+		// glColor4d(0, 1, 0, 1)
+		// glTranslated(880, 100, 0)
+		// drawString(testPlayer coins asString)
+		// glPopMatrix
 
-		glPushMatrix
-		glColor4d(1, 0, 0, 1)
-		glTranslated(880, 80, 0)
-		drawString("+" .. testPlayer armyMod asString)
-		glPopMatrix
+		// glPushMatrix
+		// glColor4d(1, 0, 0, 1)
+		// glTranslated(880, 80, 0)
+		// drawString("+" .. testPlayer armyMod asString)
+		// glPopMatrix
 
-		glPushMatrix
-		glColor4d(1, 0, 1, 1)
-		glTranslated(880, 57, 0)
-		drawString("+" ..  testPlayer moveMod asString)
-		glPopMatrix
+		// glPushMatrix
+		// glColor4d(1, 0, 1, 1)
+		// glTranslated(880, 57, 0)
+		// drawString("+" ..  testPlayer moveMod asString)
+		// glPopMatrix
 
-		glPushMatrix
-		glColor4d(1, 1, 0, 1)
-		glTranslated(880, 37, 0)
-		drawString(testPlayer flyingMod asString)
-		glPopMatrix
+		// glPushMatrix
+		// glColor4d(1, 1, 0, 1)
+		// glTranslated(880, 37, 0)
+		// drawString(testPlayer flyingMod asString)
+		// glPopMatrix
 
-		glPushMatrix
-		glColor4d(0, 1, 1, 1)
-		glTranslated(880, 12, 0)
-		drawString(testPlayer elixirs asString)
-		glPopMatrix
+		// glPushMatrix
+		// glColor4d(0, 1, 1, 1)
+		// glTranslated(880, 12, 0)
+		// drawString(testPlayer elixirs asString)
+		// glPopMatrix
 	)
 
 	reshape := method(w, h, 
@@ -354,16 +365,9 @@ EightMinEm := Object clone do(
 		glLoadIdentity
 
 		//draw stuff here
-		if(Game gameState == "Start") then(
-			drawBackground
-		) elseif(Game gameState =="Play") then(
-			drawGame
-			drawMarket
-		) else(
-			drawPlayer
-		)
+		if(inGame not, drawBackground, drawGame; drawMarket)
 
-		if(self clickState == 1 and Game gameState =="Play",
+		if(self clickState == 1 and inGame,
 			drawRegions
 		)
 
@@ -372,7 +376,7 @@ EightMinEm := Object clone do(
 	)
 
 	keyboard := method(key, x, y,
-		if (Game gameState == "Start",
+		if (inGame not,
 			//self gameObj = Game clone
 			if(key asCharacter == "2", 
 				//self gameState = "Play" 
@@ -386,9 +390,7 @@ EightMinEm := Object clone do(
         		//self gameState = "Play"
         		Game newGame(4)
         	)
-        	if(key asCharacter == "5",
-        		Game gameState = "Player"
-        	)
+        	inGame = true
         	display
 		)
     )
@@ -402,7 +404,7 @@ EightMinEm := Object clone do(
 		//writeln("run")
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 		glutInitWindowSize(self width, self height)
-		glutInitWindowPosition(850, 60)
+		glutInitWindowPosition(850, 0)
 		glutInit
 		glutCreateWindow("8 Minute Empires: Legends")
 		glutEventTarget(self)
@@ -428,5 +430,14 @@ EightMinEm := Object clone do(
 EightMinEm do(
 	//writeln("launchPath: ", System launchPath)
 	Game init()
+		// setup test drawPlayer 
+	// cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
+	// testPlayer := Player clone
+	// testPlayer init(14, "blue.png",Color clone set(1,0,1,1))
+	// cardList foreach(c,
+	// 	if (c!=nil, testPlayer cards append(c)))
+	// writeln("\n")
+	// testPlayer cards foreach(c, 
+	// 	writeln(c image); c ability affect(testPlayer))
 	run
 )

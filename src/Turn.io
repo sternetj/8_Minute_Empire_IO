@@ -12,30 +12,34 @@ Turn := Object clone do(
 		self actionType := "N/A"
 		self player := Player
 		self done := false
+		self
 	)
 	init
 	
 	// TODO: Implement this
-	takeTurn := method(Board,
+	// TODO: check if they have enough money
+	takeTurn := method(i,
 		//1: buy card
-		card := Market buyCard(0)
+		bought := Market buyCard(i)
+		card := bought at(0)
+		cost := bought at(1)
 		player cards append(card)
-
-		//2: processAction
-		card action act(self)
-
-		//3: doAction
-		while(done not,
-			if(actionType == "Army") then()
-			elseif (actionType == "Move") then()
-			elseif (actionType == "City") then(done = true)
-			elseif (actionType == "Destroy") then(done = true)
-			//AndOrAction
-			else ()
-		)
-
-		//4: addAbility
+		player coins = player coins - cost
 		card ability affect(player)
+		card action act(self)
+		processAction
+	)
+
+	processAction := method(action,
+		while(done not,
+			Game gameState = "Action"
+			Game message = player .. " : " .. if(actionType == "Army", armies .. " to place.",
+									 		  if(actionType == "Move", moves .. " remaining.",
+									 		  if(actionType == "Destroy", "destroy an army.",
+									 		  if(actionType == "City", "place a city.","AndOr"))))
+			done = true
+		)
+		Game newTurn
 	)
 
 	toString := method(
@@ -69,7 +73,7 @@ Market := Object clone do(
 		write(purchased, " bought for ", costs at(i), " coins.\n") 
 		available remove(purchased)
 		if(Deck cards size > 0, available append(Deck dealCard))
-		purchased
+		list(purchased,costs at(i))
 	)
     show := method(
     	for(i, 0, 5,
@@ -109,9 +113,7 @@ smab := ScoreModifierAbility clone
 //smab cat := "forest"
 smab init("forest")
 
-
 eab init(2)
-
 
 write("InitPlayer: ", TestPlayer asString, "\n")
 mab affect(TestPlayer)

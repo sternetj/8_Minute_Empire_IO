@@ -38,10 +38,6 @@ Deck := Object clone do(
     init := method(
 	    self cards := List clone
 
-        // doing <Action> clone init() doesn't work because
-        // init is a method and returns the last thing not the object
-        // so premaking all these abilities
-
         //Army Abilities
         a1 := ArmyAction clone
         a1 init(1)
@@ -88,7 +84,7 @@ Deck := Object clone do(
         // DONE : Score Modifiers
         // TODO : Deal w/ AndOr
 
-                c0 := Card clone 
+        c0 := Card clone 
         c0 setslots("ancient", m5, fa, "ancientphoenix.png")
         cards append(c0)
 

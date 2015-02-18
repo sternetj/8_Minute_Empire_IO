@@ -3,8 +3,9 @@
 
 Player := Object clone do(
 
-	init := method(startCoins,imgName,
-		self coins := 9
+	init := method(name, startCoins,imgName,color,
+		self name := name		
+		self coins := startCoins
 		self moveMod := 0
 		self armyMod := 0
 		self flyingMod := 0 //Can have > 3 (one card for VP, can only reduce cost to 1 though)
@@ -16,11 +17,13 @@ Player := Object clone do(
 		self percoins := 0;
 		self perfly := 0;
 		self icon := ImageWrapper new(imgName, 28, 24)
+		self color := color
 		self
 	)
 
 	asString := method(
-		"C: " .. coins .. " MM: " .. moveMod .. " AM: " .. armyMod .. " FM: " .. flyingMod .. " Elxr: " .. elixirs .."\n ALN: " .. allnoble .. " BM: ".. bothmount .. " PC: ".. percoins .. " PF: ".. perfly .. " SM: " .. scoreModifiers
+		name
+		//"C: " .. coins .. " MM: " .. moveMod .. " AM: " .. armyMod .. " FM: " .. flyingMod .. " Elxr: " .. elixirs .."\n ALN: " .. allnoble .. " BM: ".. bothmount .. " PC: ".. percoins .. " PF: ".. perfly .. " SM: " .. scoreModifiers
 	)
 
 	// TODO: find a way to lazy evaluate functions

@@ -176,7 +176,7 @@ EightMinEm := Object clone do(
 		if(clickState == 1,
 			Game players at(Game currentTurn) icon drawImage(mouseX,mouseY)
 		)
-		castle := ImageWrapper new("casbluesmall.png", 42, 42 )
+		castle := ImageWrapper new("casorg.png", 42, 42 )
 		for(j, 0, Board regions size - 1,
 			radius := 10
 			glPushMatrix

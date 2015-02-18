@@ -104,7 +104,7 @@ EightMinEm := Object clone do(
 	mouse := method(button, state, mx, my,
 		self mouseX = mx
 		self mouseY = height - my
-		if (state == 0 and button == 0,
+		if (inGame and state == 0 and button == 0,
 			writeln("(",mx,",",self height - my,")")
 			self clickState = 1
 			if(Game gameState == "Action",

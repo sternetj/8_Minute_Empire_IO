@@ -59,6 +59,50 @@ Game := Object clone do(
 		self message = self players at(activePlayer) .. " buy a card"
 	)
 
+
+	calculateScores := method(
+		continentCounts := Map clone with("N", list(0,0,0,0), "W", list(0,0,0,0), "S", list(0,0,0,0), "E", list(0,0,0,0))
+		board regions foreach(r,
+			continentCounts atPut(r continent,
+				temp := continentCounts at(r continent) clone
+				for(i, 0, 3,
+					temp atPut(i, temp at(i) + r armies at(i))
+				)
+				temp
+			)
+		)
+
+		elixirs := list(0,0,0,0)
+		self players foreach(i,p,
+			elixirs atPut(i, p elixirs)
+		)
+		maxElixirs := elixirs max
+		maxElixirCount := elixirs select(v, v == maxElixirs) size
+
+		self players foreach(i, p,
+			score := 0
+			//Regions
+			board regions foreach(r,
+				maxArmies := r armies max
+				maxArmyCount := r armies select(v, v == maxArmies) size
+				if(maxArmies = r armies at(i) and maxArmyCount == 1, score = score + 1)
+			)
+
+			//Continents
+			continentCounts values foreach(contArmies,
+				maxContArmies := contArmies max
+				maxContArmyCount := contArmies select(v, v == maxContArmies) size
+				if(maxContArmies == armies at(i) and maxContArmyCount == 1, score = score + 1)
+			)
+
+			//Abilities
+			score = p getModifiedScore(score)
+
+			//Elixirs
+			if(maxElixirs == elixirs at(i) and maxElixirCount == 1, score + 2,
+			if(maxElixirs == elixirs at(i), score + 1, score))
+		)
+	)
 	// getMessage := method(
 	// 	self players at(activePlayer) icon image asString) println 
 	// )

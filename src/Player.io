@@ -12,10 +12,10 @@ Player := Object clone do(
 		self elixirs := 0
 		self scoreModifiers := list clone
 		self cards := list clone
-		self allnoble := 0;
-		self bothmount := 0;
-		self percoins := 0;
-		self perfly := 0;
+		self allnoble := 0
+		self bothmount := 0
+		self percoins := 0
+		self perfly := 0
 		self icon := ImageWrapper new(imgName, 28, 24)
 		self color := color
 		self

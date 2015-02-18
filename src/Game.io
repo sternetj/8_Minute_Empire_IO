@@ -37,6 +37,8 @@ Game := Object clone do(
 
 		for(i, 0, nPlayers - 1, 
 			p := Player clone init(names at(i), coins, images at(i), colors at(i))
+			//give each player some cards (testing)
+			for(j, 0, 12, p cards append(Market buyCard(0) at(0)))
 			self players append(p)
 		)
 

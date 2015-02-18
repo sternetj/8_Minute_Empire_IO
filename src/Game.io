@@ -16,12 +16,14 @@ Game := Object clone do(
 	activePlayer := nil
 	activeTurn := nil
 	message := "Start game"
+	startingRegion := nil
 
 	init := method(
 		self players := list()
 		self board := Board
 		self gameState := "Buy"
 		self currentRound := 1
+		self startingRegion := 7
 	)
 
 	newGame := method(nPlayers,
@@ -38,6 +40,7 @@ Game := Object clone do(
 		for(i, 0, nPlayers - 1, 
 			p := Player clone init(names at(i), coins, images at(i), colors at(i))
 			self players append(p)
+			self board regions at(startingRegion) armies atPut(i,4) 
 		)
 
 		// In the real game players bid for first player

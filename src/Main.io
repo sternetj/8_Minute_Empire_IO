@@ -176,10 +176,11 @@ EightMinEm := Object clone do(
 		if(clickState == 1,
 			Game players at(Game currentTurn) icon drawImage(mouseX,mouseY)
 		)
-
+		castle := ImageWrapper new("casbluesmall.png", 42, 42 )
 		for(j, 0, Board regions size - 1,
 			radius := 10
 			glPushMatrix
+			castle drawImage(Board regions at(j) x, height - (Board regions at(j) y))
 			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
 			glTranslated(Board regions at(j) x, height - (Board regions at(j) y), 0)
 			gluDisk(gluNewQuadric, 0, radius, 90, 1)
@@ -216,6 +217,7 @@ EightMinEm := Object clone do(
 		//yMarker drawImage(Board r19 x, Board r19 y)
 		mMarker := ImageWrapper new("magenta.png", 28, 24)	
 		//mMarker drawImage(Board r20 x, Board r20 y)
+
 
 		glPushMatrix
 		glColor4d(0, 1, 0, 1)

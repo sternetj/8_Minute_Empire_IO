@@ -72,10 +72,17 @@ EightMinEm := Object clone do(
 		self moveIcon := ImageWrapper new("moveIco.png", 43, 17)
 		self flightIcon := ImageWrapper new("flightIco.png", 30, 17)
 		self elixirIcon := ImageWrapper new("elixirIco.png", 23, 23)
-		self bMarker := ImageWrapper new("blue.png", 28, 24)	
 		self gMarker := ImageWrapper new("green.png", 28, 24)	
-		self yMarker := ImageWrapper new("yellow.png", 28, 24)	
-		self mMarker := ImageWrapper new("magenta.png", 28, 24)	
+		self bMarker := ImageWrapper new("blue.png", 28, 24)	
+		self rMarker := ImageWrapper new("red.png", 28, 24)	
+		self cMarker := ImageWrapper new("cyan.png", 28, 24)
+		self armyimg := list(gMarker,bMarker,rMarker,cMarker)
+		self castle := ImageWrapper new("casorg.png", 42, 42)
+		self bcMarker := ImageWrapper new("casbluesmall.png", 42, 42)	
+		self gcMarker := ImageWrapper new("casgreensmall.png", 42, 42)	
+		self rcMarker := ImageWrapper new("casmagsmall.png", 42, 42)
+		self ccMarker := ImageWrapper new("cascyansmall.png", 42, 44)
+		self casimg := list(gcMarker, bcMarker,rcMarker, ccMarker)
 		self fontSize := 16
 		self mouseX := 0
 		self mouseY := 0
@@ -143,7 +150,41 @@ EightMinEm := Object clone do(
 		)
 
 		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
+
 		Game players foreach(i,p, drawPlayer(i,p))
+		
+		for(j, 0, Board regions size - 1,
+			radius := 10
+			xcom := Board regions at(j) x
+			ycom := height - (Board regions at(j) y)
+			(Color clone set(1, 1, 1, 1)) glColor
+			if(j == Game startingRegion, castle drawImage(Board regions at(j) x, height - (Board regions at(j) y)))
+			Board regions at(j) armies foreach( i, v, 
+				if(v > 0, 
+					glPushMatrix
+					glTranslated(xcom + 30 * (3.141*i/4) cos, ycom + 30 * (3.141*i/4) sin, 0)
+					armyimg at(i) drawImage()
+					(Color clone set(0, 0, 0, 1)) glColor
+					self fontSize = fontSize + 4
+					drawString(v asString)
+					(Color clone set(1, 1, 1, 1)) glColor
+					self fontSize = fontSize - 4
+					drawString(v asString)
+					glPopMatrix
+				)
+			)
+			numcas := Board regions at(j) castles select(>0) size
+			inc := 0
+			Board regions at(j) castles foreach( i, v, 
+				if(v > 0, 
+					glPushMatrix;
+					glTranslated(xcom + 30 * (-3.141*(inc+1)/numcas) cos, ycom + 30 * (-3.141*(inc+1)/numcas) sin, 0)
+					casimg at(i) drawImage()
+					glPopMatrix
+					inc := inc + 1
+				)
+			)
+		)
 		glPushMatrix
 		glTranslated(1100,100,0)
 		glColor4d(1,1,1,1)
@@ -179,25 +220,12 @@ EightMinEm := Object clone do(
 			glPopMatrix
 		)
 	)
-		bMarker := ImageWrapper new("blue.png", 28, 24)	
-		gMarker := ImageWrapper new("green.png", 28, 24)	
-		cMarker := ImageWrapper new("yellow.png", 28, 24)
-		mMarker := ImageWrapper new("magenta.png", 28, 24)	
-
-		bcMarker := ImageWrapper new("casbluesmall.png", 42, 42)	
-		gcMarker := ImageWrapper new("casgreensmall.png", 42, 42)	
-		rcMarker := ImageWrapper new("casmagsmall.png", 42, 42)
-		ccMarker := ImageWrapper new("cascyansmall.png", 42, 44)	
-		//mMarker drawImage(Board r20 x, Board r20 y)
-
-	armyimg := list(gMarker,bMarker, mMarker,cMarker  )
-	casimg := list(gcMarker, bcMarker,
-		rcMarker, ccMarker)
 
 	drawRegions := method(
 		if(clickState == 1,
 			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
 		)
+		castle := ImageWrapper new("casorg.png", 42, 42)
 		for(j, 0, Board regions size - 1,
 			radius := 10
 			xcom := Board regions at(j) x
@@ -227,6 +255,7 @@ EightMinEm := Object clone do(
 				inc := inc + 1
 				))
 			glPushMatrix
+			if(j == Game startingRegion, castle drawImage(Board regions at(j) x, height - (Board regions at(j) y)))
 			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
 			glTranslated(xcom, ycom, 0)
 			gluDisk(gluNewQuadric, 0, radius, 90, 1)

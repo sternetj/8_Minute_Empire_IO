@@ -8,7 +8,7 @@ Region := Object clone do(
 		self y := py
 		self continent := cont
 		self neighbors := List clone
-		self armies := list(0, 0, 0,0)
+		self armies := list(0, 0, 0, 0)
 		self castles := list(0, 0, 0, 0)
 	)
 

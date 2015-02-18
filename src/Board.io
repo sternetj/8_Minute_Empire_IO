@@ -8,8 +8,16 @@ Region := Object clone do(
 		self x := px
 		self y := py
 		self neighbors := List clone
+		self armies := list(0, 0, 0,0)
+		self castles := list(0, 0, 0, 0)
 	)
-	
+
+	addcastle := method(playnum,
+	castles atPut(playnum, castles at(playnum) + 1))
+
+	addarmy := method(playnum,
+	armies atPut(playnum, armies at(playnum) + 1))
+
 	addNeighbor := method(r,
 		self neighbors append(r)
 	)

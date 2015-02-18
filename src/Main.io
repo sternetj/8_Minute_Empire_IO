@@ -251,14 +251,9 @@ EightMinEm := Object clone do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
 
-		//Draw Cards
-		//testPlayer cards foreach(i, c,
-		//	ImageWrapper new(c image, 100, 180) drawImage(normalToPointX(-.4 + .4 * i), normalToPointY(-1.15))
-		//)
-
 		//Draw Modifiers
 		glPushMatrix
-		glTranslated(self width - 50, (self height - 20) - (150 * idx), 0)
+		glTranslated(self width - 50, (self height - 20) - (280 * idx), 0)
 		coinIcon drawImage(0,0)
 		armyIcon drawImage(3,-23)
 		moveIcon drawImage(-10,-43)
@@ -275,37 +270,14 @@ EightMinEm := Object clone do(
 		drawString(player flyingMod asString)
 		glTranslated(0, -24, 0)
 		drawString(player elixirs asString)
+
+
+		//Draw Cards
+		player cards foreach(i, c,
+			ImageWrapper new(c image, 100,180) drawImage(-200 - (i * 30),-50)
+		)
+
 		glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(0, 1, 0, 1)
-		// glTranslated(880, 100, 0)
-		// drawString(testPlayer coins asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 0, 0, 1)
-		// glTranslated(880, 80, 0)
-		// drawString("+" .. testPlayer armyMod asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 0, 1, 1)
-		// glTranslated(880, 57, 0)
-		// drawString("+" ..  testPlayer moveMod asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 1, 0, 1)
-		// glTranslated(880, 37, 0)
-		// drawString(testPlayer flyingMod asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(0, 1, 1, 1)
-		// glTranslated(880, 12, 0)
-		// drawString(testPlayer elixirs asString)
-		// glPopMatrix
 	)
 
 	reshape := method(w, h, 

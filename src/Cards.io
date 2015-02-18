@@ -27,13 +27,12 @@ Card := Object clone do(
         self image := img
     )
 
-    toString := method(
+    asString := method(
         "type: " .. category .. " image: " .. image .. " "
     )
 )
 
 // TODO: do we need to handle the deck running out of cards?
-
 Deck := Object clone do(
     init := method(
 	    self cards := List clone
@@ -80,10 +79,7 @@ Deck := Object clone do(
         ia := ImmuneAbility clone
 
         
-        // TODO : Get better card scans (w/ consistent sizes)
-        // DONE : Score Modifiers
         // TODO : Deal w/ AndOr
-
         c0 := Card clone 
         c0 setslots("ancient", m5, fa, "ancientphoenix.png")
         cards append(c0)
@@ -91,12 +87,6 @@ Deck := Object clone do(
         c1 := Card clone 
         fn1 := ScoreModifierAbility clone 
         fn1 init("ancient")
-        /*fn1 init(method(Player,
-                pts := 0
-                Player cards foreach(c, if(c category == "ancient", pts = (pts + 1)))
-                pts
-            )
-        )*/
         c1 setslots("ancient", m3, fn1, "ancientsage.png")
         cards append(c1)
         
@@ -274,13 +264,9 @@ Deck := Object clone do(
         //Doesn't count itself
         c33 setslots("stronghold", ca, fn33, "stronghold.png")
         cards append(c33)
-
-        cards foreach(v, writeln(v image))
     )
     init
     shuffle  := method(cards shuffle)
     dealCard := method(cards pop)
     show := method(cards map(card, write(card toString, " \n")); "\n" print)
 )
-
-//cs := Deck show

@@ -26,7 +26,7 @@ Game := Object clone do(
 
 	newGame := method(nPlayers,
 		coins := if(nPlayers == 2, 14, if(nPlayers == 3, 11, 9))
-
+		self maxRounds := if(nPlayers == 2, 13, if(nPlayers == 3,10,8))
 		images := list("green.png", "blue.png", "red.png", "cyan.png")
 		green := Color clone set(0, 1, 0, 1)
 		blue := Color clone set(0, 0, 1, 1)
@@ -39,7 +39,6 @@ Game := Object clone do(
 			p := Player clone init(names at(i), coins, images at(i), colors at(i))
 			self players append(p)
 		)
-		self maxRounds := if(nPlayers == 2, 13, if(nPlayers == 3,10,8))
 
 		// In the real game players bid for first player
 		// but we didn't want to have hidden information, 
@@ -103,9 +102,6 @@ Game := Object clone do(
 			if(maxElixirs == elixirs at(i), score + 1, score))
 		)
 	)
-	// getMessage := method(
-	// 	self players at(activePlayer) icon image asString) println 
-	// )
 
 	// TODO: Game Loop!
 )

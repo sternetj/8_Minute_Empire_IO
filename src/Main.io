@@ -55,10 +55,8 @@ ImageWrapper := Object clone do(
 	)
 )
 
-
 //TODO: try to keep Game, Board, and OpenGL logic in their seperate files
 //TODO: update the game object as input is processed
-//TODO: get pictures for starting location and castles
 EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
@@ -255,17 +253,6 @@ EightMinEm := Object clone do(
 		)
 		
 		backgroundImg drawImage(normalToPointX(0), normalToPointY(0))
-		//boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
-
-		bMarker := ImageWrapper new("blue.png", 28, 24)	
-		//bMarker drawImage(Board r17 x, Board r17 y)
-		gMarker := ImageWrapper new("green.png", 28, 24)	
-		//gMarker drawImage(Board r18 x, Board r18 y)
-		yMarker := ImageWrapper new("yellow.png", 28, 24)	
-		//yMarker drawImage(Board r19 x, Board r19 y)
-		mMarker := ImageWrapper new("magenta.png", 28, 24)	
-		//mMarker drawImage(Board r20 x, Board r20 y)
-
 
 		glPushMatrix
 		glColor4d(0, 1, 0, 1)
@@ -279,20 +266,12 @@ EightMinEm := Object clone do(
 
 	)
 
-	// TODO: Parameterize for any given Player
 	// TODO: Stack/move cards based on how many
-	// TODO: Draw all 4 players states at each edge of the screen, 
-	// maybe just use a rotated matrix?
 	drawPlayer := method(idx,player,
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
 			OpenGL glClearColor(red, green, blue, alpha)
 		)
-
-		//Draw Cards
-		//testPlayer cards foreach(i, c,
-		//	ImageWrapper new(c image, 100, 180) drawImage(normalToPointX(-.4 + .4 * i), normalToPointY(-1.15))
-		//)
 
 		//Draw Modifiers
 		glPushMatrix
@@ -314,36 +293,6 @@ EightMinEm := Object clone do(
 		glTranslated(0, -24, 0)
 		drawString(player elixirs asString)
 		glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(0, 1, 0, 1)
-		// glTranslated(880, 100, 0)
-		// drawString(testPlayer coins asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 0, 0, 1)
-		// glTranslated(880, 80, 0)
-		// drawString("+" .. testPlayer armyMod asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 0, 1, 1)
-		// glTranslated(880, 57, 0)
-		// drawString("+" ..  testPlayer moveMod asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(1, 1, 0, 1)
-		// glTranslated(880, 37, 0)
-		// drawString(testPlayer flyingMod asString)
-		// glPopMatrix
-
-		// glPushMatrix
-		// glColor4d(0, 1, 1, 1)
-		// glTranslated(880, 12, 0)
-		// drawString(testPlayer elixirs asString)
-		// glPopMatrix
 	)
 
 	reshape := method(w, h, 
@@ -377,17 +326,13 @@ EightMinEm := Object clone do(
 
 	keyboard := method(key, x, y,
 		if (inGame not,
-			//self gameObj = Game clone
 			if(key asCharacter == "2", 
-				//self gameState = "Play" 
 				Game newGame(2)
 			)
         	if(key asCharacter == "3", 
-        		//self gameState = "Play"
         		Game newGame(3)
         	)
         	if(key asCharacter == "4", 
-        		//self gameState = "Play"
         		Game newGame(4)
         	)
         	inGame = true
@@ -428,16 +373,6 @@ EightMinEm := Object clone do(
 )
 
 EightMinEm do(
-	//writeln("launchPath: ", System launchPath)
 	Game init()
-		// setup test drawPlayer 
-	// cardList := list(Deck dealCard, Deck dealCard, Deck dealCard)
-	// testPlayer := Player clone
-	// testPlayer init(14, "blue.png",Color clone set(1,0,1,1))
-	// cardList foreach(c,
-	// 	if (c!=nil, testPlayer cards append(c)))
-	// writeln("\n")
-	// testPlayer cards foreach(c, 
-	// 	writeln(c image); c ability affect(testPlayer))
 	run
 )

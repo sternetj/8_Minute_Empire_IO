@@ -66,8 +66,6 @@ EightMinEm := Object clone do(
 		self height := 1024
 		self pieceIn := 0
 		self clickState := 0
-		//should be in game?
-		self gameState := "Start"
 		self backgroundImg := ImageWrapper new("cover.png", 331, 500)
 		self boardImg := ImageWrapper new("map.png", 905, 709)
 		self coinIcon := ImageWrapper new("coinsIco.png", 23, 23)
@@ -103,6 +101,8 @@ EightMinEm := Object clone do(
 	)
 
 	mouse := method(button, state, mx, my,
+		self mouseX = mx
+		self mouseY = height - my
 		if (state == 0 and button == 0,
 			writeln("(",mx,",",self height - my,")")
 			self clickState = 1
@@ -126,12 +126,10 @@ EightMinEm := Object clone do(
 		display
 	)
 
+	//Only called when mouse is down
 	motion := method(x, y,
-		if (self clickState == 1) then (
-			self mouseX = x
-			self mouseY = self height - y
-			self display
-		)
+		self mouseX = x
+		self mouseY = height - y
 	)
 
 	//TODO: call drawPlayers here with all 4 players
@@ -142,16 +140,6 @@ EightMinEm := Object clone do(
 		)
 
 		boardImg drawImage(boardImg width / 2, (self height) - (boardImg height / 2))
-		//boardImg drawImage(normalToPointX(0), normalToPointY(0.25))
-
-		if (self width < 905,
-			self width = 905
-		)
-		if (self height < 900,
-			self height = 900
-		)
-
-		drawMarket
 	)
 	
 	drawMarket := method(
@@ -184,6 +172,11 @@ EightMinEm := Object clone do(
 	)
 
 	drawRegions := method(
+
+		if(clickState == 1,
+			Game players at(Game currentTurn) icon drawImage(mouseX,mouseY)
+		)
+
 		for(j, 0, Board regions size - 1,
 			radius := 10
 			glPushMatrix
@@ -203,10 +196,6 @@ EightMinEm := Object clone do(
 			glColor4d(0,1,0,1)
 			drawString(Market locations at(j) id)
 			glPopMatrix
-		)
-
-		if(clickState == 1,
-			self bMarker drawImage(mouseX,mouseY)
 		)
 	)
 
@@ -256,7 +245,6 @@ EightMinEm := Object clone do(
 		testPlayer init(14, "blue.png")
 		cardList foreach(c, testPlayer cards append(c))
 		testPlayer cards foreach(c, c ability affect(testPlayer))
-		/**/
 
 		//Draw Cards
 		testPlayer cards foreach(i, c,
@@ -319,38 +307,53 @@ EightMinEm := Object clone do(
 	)
 
 	display := method(
-		//writeln("display stuff")
 		glClear(GL_COLOR_BUFFER_BIT)
 		glLoadIdentity
 
 		//draw stuff here
-		if(self gameState == "Start") then(drawBackground) elseif(self gameState =="Play") then(drawGame) else(drawPlayer)
-		if(self clickState == 1 and self gameState =="Play",drawRegions)
+		if(Game gameState == "Start") then(
+			drawBackground
+		) elseif(Game gameState =="Play") then(
+			drawGame
+			drawMarket
+		) else(
+			drawPlayer
+		)
+
+		if(self clickState == 1 and Game gameState =="Play",
+			drawRegions
+		)
+
 		glFlush
 		glutSwapBuffers
 	)
 
 	keyboard := method(key, x, y,
-		if (self gameState == "Start",
+		if (Game gameState == "Start",
 			//self gameObj = Game clone
 			if(key asCharacter == "2", 
-				self gameState = "Play" 
-				//self gameObj init(list(Player1, Player2),Board clone)
+				//self gameState = "Play" 
+				Game newGame(2)
 			)
         	if(key asCharacter == "3", 
-        		self gameState = "Play"
-        		//self gameObj init(list(Player1, Player2, Player3),Board clone)
+        		//self gameState = "Play"
+        		Game newGame(3)
         	)
         	if(key asCharacter == "4", 
-        		self gameState = "Play"
-        		//self gameObj init(list(Player1, Player2, Player3, Player4),Board clone)
+        		//self gameState = "Play"
+        		Game newGame(4)
         	)
         	if(key asCharacter == "5",
-        		self gameState = "Player"
+        		Game gameState = "Player"
         	)
         	display
 		)
     )
+
+    timer := method(v,
+		glutTimerFunc(35, 0)
+		display
+	)
 
 	run := method(
 		//writeln("run")
@@ -367,6 +370,7 @@ EightMinEm := Object clone do(
 		glutMouseFunc
 		//glutPassiveMotionFunc
 		glutReshapeFunc
+		glutTimerFunc(35, 0)
 	
 		glEnable(GL_LINE_SMOOTH)
 		glEnable(GL_BLEND)
@@ -380,5 +384,6 @@ EightMinEm := Object clone do(
 
 EightMinEm do(
 	//writeln("launchPath: ", System launchPath)
+	Game init()
 	run
 )

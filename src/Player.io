@@ -15,7 +15,8 @@ Player := Object clone do(
 		self bothmount := 0;
 		self percoins := 0;
 		self perfly := 0;
-		self icon := ImageWrapper new(imgName, 28, 24)	
+		self icon := ImageWrapper new(imgName, 28, 24)
+		self
 	)
 
 	asString := method(

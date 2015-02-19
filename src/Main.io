@@ -364,6 +364,19 @@ EightMinEm := Object clone do(
 		glPopMatrix
 	)
 
+	drawHoverCard := method(
+		if(mouseX > 1237 and mouseX < 1477 and mouseY < 1017,
+			playerNum := 3 - (mouseY/255) floor
+			cardNum := 11 - ((mouseX-1237)/20) floor
+			if(playerNum < Game players size, if(cardNum < Game players at(playerNum) cards size,
+				playerNum println
+				cardNum println
+				c := Game players at(playerNum) cards at(cardNum)
+				ImageWrapper new(c image, 100,180) drawImage(1145 + (11-cardNum)*20, 97+(3-playerNum)*255)
+			))
+		)
+	)
+
 	reshape := method(w, h, 
 		self width = w
 		self height = h
@@ -383,7 +396,7 @@ EightMinEm := Object clone do(
 		glLoadIdentity
 
 		//draw stuff here
-		if(inGame not, drawBackground, drawGame; drawMarket)
+		if(inGame not, drawBackground, drawGame; drawMarket; drawHoverCard)
 
 		if(inGame and (Game gameState == "Army" or Game gameState == "Move"),
 			drawRegions

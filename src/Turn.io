@@ -34,8 +34,17 @@ Turn := Object clone do(
 		) elseif (Game gameState == "Move") then (
 			// i is list of fromRegion and toRegion
 			path := Board regions at (i at(0)) getPath(Board regions at (i at(1)))
-			if (path size <= moves,
-				self moves = moves - path size
+			path println
+			pathSize := 0
+			path foreach(edge,
+				if(edge last, //water connection
+					pathSize = pathSize + player getFlightCost
+				, //land connection
+					pathSize = pathSize + 1
+				)
+			)
+			if (pathSize <= moves,
+				self moves = moves - pathSize
 
 				mArmies := Board regions at (i at(0)) armies
 				mArmies atPut(Game activePlayer, mArmies at(Game activePlayer) - 1)
@@ -61,7 +70,7 @@ Turn := Object clone do(
 
 	processAction := method(action,
 			Game gameState = action actionType
-			Game message = player .. " : " .. if(actionType == "Army", armies .. " to place.",
+			Game message = player .. " : " .. if(actionType == "Army", armies .. " armies to place.",
 									 		  if(actionType == "Move", moves .. " remaining moves.",
 									 		  if(actionType == "Destroy", "destroy an army.",
 									 		  if(actionType == "City", "place a city.","AndOr"))))

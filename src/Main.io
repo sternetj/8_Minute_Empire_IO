@@ -61,7 +61,7 @@ EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
 		self width := 1600
-		self height := 1000
+		self height := 1024
 		self pieceIn := 0
 		self clickState := 0
 		self inGame := false
@@ -111,7 +111,7 @@ EightMinEm := Object clone do(
 		self mouseX = mx
 		self mouseY = height - my
 		if (inGame and state == 0 and button == 0,
-			writeln("(",mx,",",self height - my,")")
+			//writeln("(",mx,",",self height - my,")")
 			self clickState = 1
 			if (Game gameState == "Buy") then (
 				for(j, 0, Market locations size - 1,
@@ -180,7 +180,6 @@ EightMinEm := Object clone do(
 		self mouseY = height - y
 	)
 
-	//TODO: call drawPlayers here with all 4 players
 	drawGame := method(
 		bkgndColor := Color clone set(0, 0, 0, 1)
 		bkgndColor do(
@@ -196,7 +195,7 @@ EightMinEm := Object clone do(
 			xcom := Board regions at(j) x
 			ycom := height - (Board regions at(j) y)
 			(Color clone set(1, 1, 1, 1)) glColor
-			if(j == Game startingRegion, castle drawImage(Board regions at(j) x, height - (Board regions at(j) y)))
+			if(j == Game startingRegion, self castle drawImage(Board regions at(j) x, height - (Board regions at(j) y)))
 			Board regions at(j) armies foreach( i, v, 
 				if(v > 0, 
 					glPushMatrix
@@ -224,7 +223,7 @@ EightMinEm := Object clone do(
 			)
 		)
 		glPushMatrix
-		glTranslated(1100,100,0)
+		glTranslated(1125,50,0)
 		glColor4d(1,1,1,1)
 		drawString(Game message)
 		glPopMatrix
@@ -260,37 +259,37 @@ EightMinEm := Object clone do(
 	)
 
 	drawRegions := method(
-		castle := ImageWrapper new("casorg.png", 42, 42)
+		
 		for(j, 0, Board regions size - 1,
 			radius := 10
 			xcom := Board regions at(j) x
 			ycom := height - (Board regions at(j) y)
 			(Color clone set(1, 1, 1, 1)) glColor
-			Board regions at(j) armies foreach( i, v, if (v>0, 
-				glPushMatrix;
-				glTranslated(xcom + 30 * (3.141*i/4) cos ,
-				 ycom + 30 * (3.141*i/4) sin, 0);
-				armyimg at(i) drawImage(); 
-				(Color clone set(0, 0, 0, 1)) glColor
-				self fontSize = fontSize +4
-				drawString(v asString);
-				(Color clone set(1, 1, 1, 1)) glColor
-				self fontSize = fontSize -4
-				drawString(v asString);
-				glPopMatrix
-				))
-			numcas := Board regions at(j) castles select(>0) size
-			inc := 0
-			Board regions at(j) castles foreach( i, v, if (v>0, 
-				glPushMatrix;
-				glTranslated(xcom + 30 * (-3.141*(inc+1)/numcas) cos ,
-				 ycom + 30 * (-3.141*(inc+1)/numcas) sin, 0);
-				casimg at(i) drawImage(); 
-				glPopMatrix;
-				inc := inc + 1
-				))
+			// Board regions at(j) armies foreach( i, v, if (v>0, 
+			// 	glPushMatrix;
+			// 	glTranslated(xcom + 30 * (3.141*i/4) cos ,
+			// 	 ycom + 30 * (3.141*i/4) sin, 0);
+			// 	armyimg at(i) drawImage(); 
+			// 	(Color clone set(0, 0, 0, 1)) glColor
+			// 	self fontSize = fontSize +4
+			// 	drawString(v asString);
+			// 	(Color clone set(1, 1, 1, 1)) glColor
+			// 	self fontSize = fontSize -4
+			// 	drawString(v asString);
+			// 	glPopMatrix
+			// 	))
+			// numcas := Board regions at(j) castles select(>0) size
+			// inc := 0
+			// Board regions at(j) castles foreach( i, v, if (v>0, 
+			// 	glPushMatrix;
+			// 	glTranslated(xcom + 30 * (-3.141*(inc+1)/numcas) cos ,
+			// 	 ycom + 30 * (-3.141*(inc+1)/numcas) sin, 0);
+			// 	casimg at(i) drawImage(); 
+			// 	glPopMatrix;
+			// 	inc := inc + 1
+			// 	))
 			glPushMatrix
-			if(j == Game startingRegion, castle drawImage(Board regions at(j) x, height - (Board regions at(j) y)))
+			//if(j == Game startingRegion, castle drawImage(Board regions at(j) x, height - (Board regions at(j) y)))
 			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
 			glTranslated(xcom, ycom, 0)
 			gluDisk(gluNewQuadric, 0, radius, 90, 1)
@@ -358,9 +357,9 @@ EightMinEm := Object clone do(
 		drawString(player elixirs asString)
 
 		//Draw Cards
-		//player cards foreach(i, c,
-			//ImageWrapper new(c image, 100,180) drawImage(-200 - (i * 20), -50)
-		//)
+		player cards foreach(i, c,
+			ImageWrapper new(c image, 100,180) drawImage(-200 - (i * 20), -50)
+		)
 
 		glPopMatrix
 	)

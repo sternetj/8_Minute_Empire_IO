@@ -61,7 +61,7 @@ EightMinEm := Object clone do(
 	init := method(
 		setParent(OpenGL)
 		self width := 1600
-		self height := 1024
+		self height := 1000
 		self pieceIn := 0
 		self clickState := 0
 		self inGame := false
@@ -86,6 +86,7 @@ EightMinEm := Object clone do(
 		self fontSize := 16
 		self mouseX := 0
 		self mouseY := 0
+		self fromRegion := nil
 	)
 
 	init
@@ -112,16 +113,7 @@ EightMinEm := Object clone do(
 		if (inGame and state == 0 and button == 0,
 			writeln("(",mx,",",self height - my,")")
 			self clickState = 1
-			if(Game gameState == "Action",
-				for(j, 0, Board regions size - 1,
-					px :=  (Board regions at(j)) x
-					py :=  (Board regions at(j)) y
-					if(((px - mx) abs < 35) and ((py - my) abs < 35),
-						writeln("In region ", j + 1)
-					)
-				)
-			,
-			if(Game gameState == "Buy",
+			if (Game gameState == "Buy") then (
 				for(j, 0, Market locations size - 1,
 					px :=  (Market locations at(j)) x + 50
 					py :=  (Market locations at(j)) y - 90
@@ -129,9 +121,55 @@ EightMinEm := Object clone do(
 						Game activeTurn takeTurn(j)
 					)
 				)
-			))
+			) elseif (Game gameState == "Army") then (
+				false
+			) elseif (Game gameState == "Move") then (
+				for(j, 0, Board regions size - 1,
+					px :=  (Board regions at(j)) x
+					py :=  (Board regions at(j)) y
+					if(((px - mx) abs < 35) and ((py - my) abs < 35),
+						self fromRegion = j
+						writeln("In region ", j + 1)
+						if (Board regions at(j) armies at(Game activePlayer) == 0,
+							self clickState = 0
+							glPushMatrix
+							glTranslated(1100,80,0)
+							glColor4d(1,1,1,1)
+							drawString("You have no armies in this region.")
+							glPopMatrix
+							
+						)
+					)
+				)
+			) elseif (Game gameState == "Destroy") then (
+				false
+			) elseif (Game gameState == "City") then (
+				Game activePlayer
+			) else (
+
+			)
 			,
 			self clickState = 0
+			if (Game gameState == "Buy") then (
+				false
+			) elseif (Game gameState == "Army") then (
+				false
+			) elseif (Game gameState == "Move") then (
+				for(j, 0, Board regions size - 1,
+					px :=  (Board regions at(j)) x
+					py :=  (Board regions at(j)) y
+					if(((px - mx) abs < 35) and ((py - my) abs < 35),
+						Game activeTurn takeTurn(list(fromRegion, j))
+					)
+				)
+
+			) elseif (Game gameState == "Destroy") then (
+				false
+			) elseif (Game gameState == "City") then (
+				Game activePlayer
+			) else (
+				false
+			)
 		)	
 		display
 	)
@@ -222,9 +260,6 @@ EightMinEm := Object clone do(
 	)
 
 	drawRegions := method(
-		if(clickState == 1,
-			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
-		)
 		castle := ImageWrapper new("casorg.png", 42, 42)
 		for(j, 0, Board regions size - 1,
 			radius := 10
@@ -263,16 +298,16 @@ EightMinEm := Object clone do(
 			drawString(Board regions at(j) id)
 			glPopMatrix	
 		)
-		for(j, 0, Market locations size -1,
-			glPushMatrix
-			(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
-			glTranslated(Market locations at(j) x, Market locations at(j) y, 0)
-			glRectd(0, 65, 160, -180)
-			glTranslated(70, -70, 0)
-			glColor4d(0,1,0,1)
-			drawString(Market locations at(j) id)
-			glPopMatrix
-		)
+		// for(j, 0, Market locations size -1,
+		// 	glPushMatrix
+		// 	(Color clone set(0.2, 0.2, 0.2, 0.7)) glColor
+		// 	glTranslated(Market locations at(j) x, Market locations at(j) y, 0)
+		// 	glRectd(0, 65, 160, -180)
+		// 	glTranslated(70, -70, 0)
+		// 	glColor4d(0,1,0,1)
+		// 	drawString(Market locations at(j) id)
+		// 	glPopMatrix
+		// )
 	)
 
 	drawBackground := method(
@@ -323,9 +358,9 @@ EightMinEm := Object clone do(
 		drawString(player elixirs asString)
 
 		//Draw Cards
-		player cards foreach(i, c,
-			ImageWrapper new(c image, 100,180) drawImage(-200 - (i * 20), -50)
-		)
+		//player cards foreach(i, c,
+			//ImageWrapper new(c image, 100,180) drawImage(-200 - (i * 20), -50)
+		//)
 
 		glPopMatrix
 	)
@@ -341,7 +376,7 @@ EightMinEm := Object clone do(
 		glMatrixMode(GL_MODELVIEW)
 		glLoadIdentity
 		drawBackground
-		display
+		//display
 	)
 
 	display := method(
@@ -351,9 +386,15 @@ EightMinEm := Object clone do(
 		//draw stuff here
 		if(inGame not, drawBackground, drawGame; drawMarket)
 
-		if(self clickState == 1 and inGame,
+		if(inGame and (Game gameState == "Army" or Game gameState == "Move"),
 			drawRegions
 		)
+
+		if(self clickState == 1 and inGame and (Game gameState == "Army" or Game gameState == "Move"),
+			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
+		)
+
+		
 
 		glFlush
 		glutSwapBuffers
@@ -363,14 +404,16 @@ EightMinEm := Object clone do(
 		if (inGame not,
 			if(key asCharacter == "2", 
 				Game newGame(2)
+				inGame = true
 			)
         	if(key asCharacter == "3", 
         		Game newGame(3)
+        		inGame = true
         	)
         	if(key asCharacter == "4", 
         		Game newGame(4)
+        		inGame = true
         	)
-        	inGame = true
         	display
 		)
     )
@@ -384,7 +427,7 @@ EightMinEm := Object clone do(
 		//writeln("run")
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 		glutInitWindowSize(self width, self height)
-		glutInitWindowPosition(850, 0)
+		glutInitWindowPosition(10, 0)
 		glutInit
 		glutCreateWindow("8 Minute Empires: Legends")
 		glutEventTarget(self)

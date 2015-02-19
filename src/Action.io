@@ -2,12 +2,16 @@
 # Prototypes for Card Actions
 
 AbstractAction := Object clone do(
+	actionType := "ActionType"
+
 	act := method(Turn,
 		nil
 	)
 )
 
 ArmyAction := AbstractAction clone do(
+	actionType := "Army"
+
 	init := method(n,
 		self nArmies := n
 	)
@@ -19,6 +23,8 @@ ArmyAction := AbstractAction clone do(
 )
 
 MoveAction := AbstractAction clone do(
+	actionType := "Move"
+
 	init := method(n,
 		self nMoves := n
 	)
@@ -30,18 +36,24 @@ MoveAction := AbstractAction clone do(
 )
 
 CityAction := AbstractAction clone do(
+	actionType := "City"
+
 	act := method(Turn,
 		Turn actionType := "City"
 	)
 )
 
 DestroyAction := AbstractAction clone do(
+	actionType := "Destroy"
+
 	act := method(
 		Turn actionType := "Destroy"
 	)
 )
 
 AndOrAction := AbstractAction clone do(
+	actionType := "AndOr"
+	
 	init := method(a1, a2, oper,
 		self operator := oper
 		self action1 := a1

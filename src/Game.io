@@ -55,6 +55,7 @@ Game := Object clone do(
 	)
 
 	newTurn := method(
+		self gameState := "Buy"
 		self activePlayer = (self activePlayer + 1) % (self players size)
 		if (self activePlayer == self startingPlayer, 
 			self currentRound = self currentRound + 1

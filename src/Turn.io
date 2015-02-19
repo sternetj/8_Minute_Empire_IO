@@ -19,26 +19,52 @@ Turn := Object clone do(
 	// TODO: Implement this
 	// TODO: check if they have enough money
 	takeTurn := method(i,
-		bought := Market buyCard(i)
-		card := bought at(0)
-		cost := bought at(1)
-		player cards append(card)
-		player coins = player coins - cost
-		card ability affect(player)
-		card action act(self)
-		processAction
+		if (Game gameState == "Buy") then (
+			// i is index of selected card
+			bought := Market buyCard(i)
+			card := bought at(0)
+			cost := bought at(1)
+			player cards append(card)
+			player coins = player coins - cost
+			card ability affect(player)
+			card action act(self)
+			processAction(card action)
+		) elseif (Game gameState == "Army") then (
+
+		) elseif (Game gameState == "Move") then (
+			// i is list of fromRegion and toRegion
+			path := Board regions at (i at(0)) getPath(Board regions at (i at(1)))
+			if (path size <= moves,
+				self moves = moves - path size
+
+				mArmies := Board regions at (i at(0)) armies
+				mArmies atPut(Game activePlayer, mArmies at(Game activePlayer) - 1)
+				Board regions at (i at(0)) armies = mArmies
+
+				mArmies := Board regions at (i at(1)) armies
+				mArmies atPut(Game activePlayer, mArmies at(Game activePlayer) + 1)
+				Board regions at (i at(1)) armies = mArmies
+			)
+			if (moves == 0,
+				Game newTurn,
+				processAction(MoveAction clone)
+			)
+
+		) elseif (Game gameState == "Destroy") then (
+
+		) elseif (Game gameState == "City") then (
+
+		) else (
+			Game newTurn
+		)
 	)
 
 	processAction := method(action,
-		while(done not,
-			Game gameState = "Action"
+			Game gameState = action actionType
 			Game message = player .. " : " .. if(actionType == "Army", armies .. " to place.",
-									 		  if(actionType == "Move", moves .. " remaining.",
+									 		  if(actionType == "Move", moves .. " remaining moves.",
 									 		  if(actionType == "Destroy", "destroy an army.",
 									 		  if(actionType == "City", "place a city.","AndOr"))))
-			done = true
-		)
-		Game newTurn
 	)
 
 	toString := method(

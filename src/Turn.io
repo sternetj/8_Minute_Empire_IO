@@ -19,7 +19,9 @@ Turn := Object clone do(
 	// TODO: Implement this
 	// TODO: check if they have enough money
 	takeTurn := method(i,
-		if (Game gameState == "Buy") then (
+		if (i == "EndAction") then (
+			Game newTurn
+		) elseif (Game gameState == "Buy") then (
 			// i is index of selected card
 			bought := Market buyCard(i)
 			card := bought at(0)
@@ -30,9 +32,22 @@ Turn := Object clone do(
 			card action act(self)
 			processAction(card action)
 		) elseif (Game gameState == "Army") then (
+			//i is the region to add the city too
+			if (i castles at(Game activePlayer) > 0 or i == Board regions at(Game startingRegion),
+				mArmies := i armies
+				mArmies atPut(Game activePlayer, mArmies at(Game activePlayer) + 1)
+				i armies = mArmies
+
+				self armies = armies - 1
+			)
+
+			if (armies == 0,
+				Game newTurn,
+				processAction(ArmyAction clone)
+			)
 
 		) elseif (Game gameState == "Move") then (
-			// i is list of fromRegion and toRegion
+			// i is a list of indexs of fromRegion and toRegion
 			path := Board regions at (i at(0)) getPath(Board regions at (i at(1)))
 			path println
 			pathSize := 0
@@ -62,7 +77,13 @@ Turn := Object clone do(
 		) elseif (Game gameState == "Destroy") then (
 
 		) elseif (Game gameState == "City") then (
-
+			//i is the region to add the city too
+			if (i castles at(Game activePlayer) == 0,
+				mCastles := i castles
+				mCastles atPut(Game activePlayer, 1)
+				i castles = mCastles
+				Game newTurn
+			)
 		) else (
 			Game newTurn
 		)

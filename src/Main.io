@@ -87,6 +87,7 @@ EightMinEm := Object clone do(
 		self mouseX := 0
 		self mouseY := 0
 		self fromRegion := nil
+		self regionRadius := 35
 	)
 
 	init
@@ -114,6 +115,36 @@ EightMinEm := Object clone do(
 			//writeln("(",mx,",",self height - my,")")
 			self clickState = 1
 			if (Game gameState == "Buy") then (
+				// do buy card in release to confirm placement like in chess
+				false
+			) elseif (Game gameState == "Army") then (
+				// do place army in release to confirm placement like in chess
+				false
+			) elseif (Game gameState == "Move") then (
+				for(j, 0, Board regions size - 1,
+					px :=  (Board regions at(j)) x
+					py :=  (Board regions at(j)) y
+					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+						self fromRegion = j
+						writeln("Move army from region ", j + 1)
+						if (Board regions at(j) armies at(Game activePlayer) == 0,
+							self clickState = 0
+							// Tell the user they dont have armies here							
+						)
+					)
+				)
+			) elseif (Game gameState == "Destroy") then (
+				false
+			) elseif (Game gameState == "City") then (
+				// do place city in release to confirm placement like in chess
+				false
+			) else (
+				writeln("Invalid gameState in Main.io -- MouseDown")
+				false
+			)
+			,
+			self clickState = 0
+			if (Game gameState == "Buy") then (
 				for(j, 0, Market locations size - 1,
 					px :=  (Market locations at(j)) x + 50
 					py :=  (Market locations at(j)) y - 90
@@ -121,52 +152,28 @@ EightMinEm := Object clone do(
 						Game activeTurn takeTurn(j)
 					)
 				)
-			) elseif (Game gameState == "Army") then (
-				false
-			) elseif (Game gameState == "Move") then (
+			) elseif (Game gameState == "Army" or Game gameState == "City") then (
 				for(j, 0, Board regions size - 1,
 					px :=  (Board regions at(j)) x
 					py :=  (Board regions at(j)) y
-					if(((px - mx) abs < 35) and ((py - my) abs < 35),
-						self fromRegion = j
-						writeln("In region ", j + 1)
-						if (Board regions at(j) armies at(Game activePlayer) == 0,
-							self clickState = 0
-							glPushMatrix
-							glTranslated(1100,80,0)
-							glColor4d(1,1,1,1)
-							drawString("You have no armies in this region.")
-							glPopMatrix
-							
-						)
+					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+						writeln("Place relative piece in region ", j + 1)
+						placeRegion := Board regions at(j)
+						Game activeTurn takeTurn(Board regions at(j))
 					)
 				)
-			) elseif (Game gameState == "Destroy") then (
-				false
-			) elseif (Game gameState == "City") then (
-				Game activePlayer
-			) else (
-
-			)
-			,
-			self clickState = 0
-			if (Game gameState == "Buy") then (
-				false
-			) elseif (Game gameState == "Army") then (
-				false
 			) elseif (Game gameState == "Move") then (
 				for(j, 0, Board regions size - 1,
 					px :=  (Board regions at(j)) x
 					py :=  (Board regions at(j)) y
-					if(((px - mx) abs < 35) and ((py - my) abs < 35),
+					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+						writeln("Move army to region ", j + 1)
 						Game activeTurn takeTurn(list(fromRegion, j))
 					)
 				)
 
 			) elseif (Game gameState == "Destroy") then (
 				false
-			) elseif (Game gameState == "City") then (
-				Game activePlayer
 			) else (
 				false
 			)
@@ -226,6 +233,11 @@ EightMinEm := Object clone do(
 		glTranslated(1125,50,0)
 		glColor4d(1,1,1,1)
 		drawString(Game message)
+		if (Game gameState != "Buy",
+			glTranslated(0,fontSize * -1.5,0)
+			glColor4d(0.25,0.25,0.25,1)
+			drawString("Press any key to end current action")
+		)
 		glPopMatrix
 	)
 	
@@ -398,7 +410,7 @@ EightMinEm := Object clone do(
 		//draw stuff here
 		if(inGame not, drawBackground, drawGame; drawMarket; drawHoverCard)
 
-		if(inGame and (Game gameState == "Army" or Game gameState == "Move"),
+		if(inGame and (Game gameState == "Army" or Game gameState == "Move" or Game gameState == "City"),
 			drawRegions
 		)
 
@@ -413,7 +425,7 @@ EightMinEm := Object clone do(
 	)
 
 	keyboard := method(key, x, y,
-		if (inGame not,
+		if (inGame not) then (
 			if(key asCharacter == "2", 
 				Game newGame(2)
 				inGame = true
@@ -427,7 +439,10 @@ EightMinEm := Object clone do(
         		inGame = true
         	)
         	display
+		) elseif (Game gameState != "Buy") then (
+			Game activeTurn takeTurn("EndAction")
 		)
+
     )
 
     timer := method(v,
@@ -439,7 +454,7 @@ EightMinEm := Object clone do(
 		//writeln("run")
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 		glutInitWindowSize(self width, self height)
-		glutInitWindowPosition(10, 0)
+		glutInitWindowPosition(0, 0)
 		glutInit
 		glutCreateWindow("8 Minute Empires: Legends")
 		glutEventTarget(self)
@@ -457,7 +472,7 @@ EightMinEm := Object clone do(
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 		//glBlendFunc(GL_SRC_ALPHA, GL_ONE)
 		//glHint(GL_LINE_SMOOTH_HINT, GL_NICEST)
-		glutReshapeWindow(self width, self height)
+		//glutReshapeWindow(self width, self height)
 		glutMainLoop
 	)
 )

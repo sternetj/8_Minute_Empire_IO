@@ -121,15 +121,15 @@ EightMinEm := Object clone do(
 				// do place army in release to confirm placement like in chess
 				false
 			) elseif (Game gameState == "Move") then (
+				self clickState = 0
 				for(j, 0, Board regions size - 1,
 					px :=  (Board regions at(j)) x
 					py :=  (Board regions at(j)) y
 					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
-						self fromRegion = j
-						writeln("Move army from region ", j + 1)
-						if (Board regions at(j) armies at(Game activePlayer) == 0,
-							self clickState = 0
-							// Tell the user they dont have armies here							
+						if (Board regions at(j) armies at(Game activePlayer) > 0,
+							writeln("Move army from region ", j + 1)
+							self fromRegion = j
+							self clickState = 1						
 						)
 					)
 				)
@@ -139,7 +139,7 @@ EightMinEm := Object clone do(
 				// do place city in release to confirm placement like in chess
 				false
 			) else (
-				writeln("Invalid gameState in Main.io -- MouseDown")
+				writeln("In Main.io, Invalid gameState:", Game gameState )
 				false
 			)
 			,
@@ -376,16 +376,21 @@ EightMinEm := Object clone do(
 		glPopMatrix
 	)
 
+	passiveMotion := method(mx, my,
+		self mouseX = mx
+		self mouseY = height - my
+	)
+
 	drawHoverCard := method(
-		if(mouseX > 1237 and mouseX < 1477 and mouseY < 1017,
+		if(mouseX > (width - 315) and mouseX < (width - 125) and mouseY < self height - 20,
 			playerNum := 3 - (mouseY/255) floor
-			cardNum := 11 - ((mouseX-1237)/20) floor
-			if(playerNum < Game players size, if(cardNum < Game players at(playerNum) cards size,
-				playerNum println
-				cardNum println
+			cardNum := ((width - 125 - mouseX)/20) floor
+			if(cardNum >=0 and playerNum >=0 and (playerNum < Game players size) and (cardNum < Game players at(playerNum) cards size),
 				c := Game players at(playerNum) cards at(cardNum)
-				ImageWrapper new(c image, 100,180) drawImage(1145 + (11-cardNum)*20, 97+(3-playerNum)*255)
-			))
+				if (c != nil,
+					ImageWrapper new(c image, 100,180) drawImage(self width - 235 - (cardNum)*20, height - 162 - (playerNum)*255)
+				)
+			)
 		)
 	)
 
@@ -463,7 +468,7 @@ EightMinEm := Object clone do(
 		//glutSpecialFunc
 		glutMotionFunc
 		glutMouseFunc
-		//glutPassiveMotionFunc
+		glutPassiveMotionFunc
 		glutReshapeFunc
 		glutTimerFunc(35, 0)
 	

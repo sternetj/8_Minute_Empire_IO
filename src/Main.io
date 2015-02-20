@@ -229,6 +229,9 @@ EightMinEm := Object clone do(
 				)
 			)
 		)
+
+		ImageWrapper new("passturn.png", 200,84) drawImage(125,900)
+
 		glPushMatrix
 		glTranslated(1125,50,0)
 		glColor4d(1,1,1,1)
@@ -423,7 +426,10 @@ EightMinEm := Object clone do(
 			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
 		)
 
-		
+		if(self clickState == 1 and inGame and (mouseX > 40 and mouseX < 205 and mouseY > 873 and mouseY < 925),
+			self clickState = 0
+			Game newTurn
+		)
 
 		glFlush
 		glutSwapBuffers

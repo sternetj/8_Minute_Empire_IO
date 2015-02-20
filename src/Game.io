@@ -23,7 +23,12 @@ Game := Object clone do(
 		self board := Board
 		self gameState := "Buy"
 		self currentRound := 1
-		self startingRegion := Random value(0,23) floor
+		//Starting Regions satisfy 2 properties:
+		// 1) It has a water connection to another continent
+		// 2) It's adjacent to a region with a water connection to another continent;
+		//     OR it has an additional water connection to another continent
+		// In our static board, only r5, r6, r8, r9, and r10 are eligible starting positions
+		self startingRegion := (list(5,6,8,9,10) at((Random value(0,5) floor))) - 1
 	)
 
 	newGame := method(nPlayers,
@@ -66,11 +71,11 @@ Game := Object clone do(
 
 
 	calculateScores := method(
-		continentCounts := Map clone with("N", list(0,0,0,0), "W", list(0,0,0,0), "S", list(0,0,0,0), "E", list(0,0,0,0))
+		continentCounts := Map clone with("N", list(0,0,0,0), "W", list(0,0,0,0), "S", list(0,0,0,0), "E", list(0,0,0,0), "Island", list(0,0,0,0))
 		board regions foreach(r,
 			continentCounts atPut(r continent,
 				temp := continentCounts at(r continent) clone
-				for(i, 0, 3,
+				for(i, 0, 4,
 					temp atPut(i, temp at(i) + r armies at(i))
 				)
 				temp

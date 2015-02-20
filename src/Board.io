@@ -72,9 +72,9 @@ Board := Object clone do(
 	r4 := Region clone
 	r4 init("r4",483,147,"N")
 	r5 := Region clone
-	r5 init("r5",399,322,"S")
+	r5 init("r5",399,322,"Island")
 	r6 := Region clone
-	r6 init("r6",348,365,"S")
+	r6 init("r6",348,365,"Island")
 	r7 := Region clone
 	r7 init("r7",510,390,"S")
 	r8 := Region clone
@@ -166,22 +166,22 @@ Board := Object clone do(
 	regions := list(r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,r11,r12,r13,r14,r15,r16,r17,r18,r19,r20,r21,r22)
 )
 
-// writeln("Path between r1 and r2: ", Board r1 getPath(Board r2)) 	
-// writeln("Path between r1 and r3: ", Board r1 getPath(Board r3)) 	
-writeln("Path between r1 and r4: ", Board r1 getPath(Board r4)) 	
-writeln("Path between r1 and r5: ", Board r1 getPath(Board r5)) 	
+//writeln("Path between r1 and r2: ", Board r1 getPath(Board r2)) 	
+//writeln("Path between r1 and r3: ", Board r1 getPath(Board r3)) 	
+//writeln("Path between r1 and r4: ", Board r1 getPath(Board r4)) 	
+//writeln("Path between r1 and r5: ", Board r1 getPath(Board r5)) 	
 //writeln("Path between r1 and r6: ", Board r1 getPath(Board r6)) 	
 //writeln("Path between r1 and r7: ", Board r1 getPath(Board r7)) 	
-writeln("Path between r1 and r8: ", Board r1 getPath(Board r8)) 	
+//writeln("Path between r1 and r8: ", Board r1 getPath(Board r8)) 	
 //writeln("Path between r1 and r9: ", Board r1 getPath(Board r9)) 	
 //writeln("Path between r1 and r10: ", Board r1 getPath(Board r10)) 	
 //writeln("Path between r1 and r11: ", Board r1 getPath(Board r11)) 	
 //writeln("Path between r1 and r12: ", Board r1 getPath(Board r12)) 	
-writeln("Path between r1 and r13: ", Board r1 getPath(Board r13)) 	
+//writeln("Path between r1 and r13: ", Board r1 getPath(Board r13)) 	
 //writeln("Path between r1 and r14: ", Board r1 getPath(Board r14)) 	
 //writeln("Path between r1 and r15: ", Board r1 getPath(Board r15)) 	
 //writeln("Path between r1 and r16: ", Board r1 getPath(Board r16)) 	
-writeln("Path between r1 and r17: ", Board r1 getPath(Board r17)) 	
+//writeln("Path between r1 and r17: ", Board r1 getPath(Board r17)) 	
 // writeln("Path between r1 and r18: ", Board r1 getPath(Board r18)) 	
 // writeln("Path between r1 and r19: ", Board r1 getPath(Board r19)) 	
 // writeln("Path between r1 and r20: ", Board r1 getPath(Board r20)) 	

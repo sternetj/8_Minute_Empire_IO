@@ -78,6 +78,7 @@ Turn := Object clone do(
 		) elseif (Game gameState == "Destroy") then (
 
 		) elseif (Game gameState == "City") then (
+			//TODO: can only place city if you have an army in the region
 			//i is the region to add the city too
 			if (i castles at(Game activePlayer) == 0,
 				mCastles := i castles
@@ -109,7 +110,7 @@ Turn := Object clone do(
 									 		  if(actionType == "Move", moves .. " remaining moves.",
 									 		  if(actionType == "Destroy", "destroy an army.",
 									 		  if(actionType == "City", "place a city.",
-									 		  "Do you want to [1] " .. action action1 description .. " or [2] " .. action action2 description .. "?"))))
+									 		  "Do you want to [1] " .. action action1 description .. "\n or [2] " .. action action2 description .. "?"))))
 	)
 
 	doNextAction := method(

@@ -158,7 +158,7 @@ EightMinEm := Object clone do(
 					py :=  (Board regions at(j)) y
 					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
 						writeln("Place relative piece in region ", j + 1)
-						placeRegion := Board regions at(j)
+						//placeRegion := Board regions at(j)
 						Game activeTurn takeTurn(Board regions at(j))
 					)
 				)

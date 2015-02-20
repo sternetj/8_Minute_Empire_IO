@@ -96,17 +96,17 @@ Deck := Object clone do(
         
         c3 := Card clone 
         ao3 := AndOrAction clone
-        ao3 init(a1, ca, "and")
+        ao3 init(ca, a1, "And")
         c3 setslots("ancient", ao3, aa, "ancientwoods.png")
         cards append(c3)
 
         c4 := Card clone 
-        c4 setslots("arcane", a4, ma, "arcanemanticore.png")
+        c4 setslots("arcane", a4, da, "arcanemanticore.png")
         cards append(c4)
 
         c5 := Card clone 
         ao5 := AndOrAction clone
-        ao5 init(a3, m4, "or")
+        ao5 init(a3, m4, "Or")
         c5 setslots("arcane", ao5, fa, "arcanesphinx.png")
         cards append(c5)
 
@@ -118,13 +118,13 @@ Deck := Object clone do(
 
         c7 := Card clone 
         ao7 := AndOrAction clone
-        ao7 init(a3, ca, "or")
+        ao7 init(a3, ca, "Or")
         c7 setslots("castle", ao7, e1, "castle1.png")
         cards append(c7)
 
         c8 := Card clone 
         ao8 := AndOrAction clone
-        ao8 init(m3, ca, "and")
+        ao8 init(m3, ca, "And")
         c8 setslots("castle", ao8, e1, "castle2.png")
         cards append(c8)
 
@@ -138,7 +138,7 @@ Deck := Object clone do(
 
         c11 := Card clone 
         ao11 := AndOrAction clone
-        ao11 init(m4, a3, "or")
+        ao11 init(a3, m4, "Or")
         c11 setslots("cursed", ao11, e1, "cursedking.png")
         cards append(c11)
 
@@ -153,7 +153,7 @@ Deck := Object clone do(
 
         c14 := Card clone 
         ao14 := AndOrAction clone
-        ao14 init(da, a3, "and")
+        ao14 init(a3, da, "And")
         c14 setslots("dire", ao14, fa, "diredragon.png")
         cards append(c14)
 
@@ -163,7 +163,7 @@ Deck := Object clone do(
 
         c16 := Card clone 
         ao16 := AndOrAction clone
-        ao16 init(da, a3, "and")
+        ao16 init(a3, da, "And")
         c16 setslots("dire", ao16, ia, "diregiant.png")
         cards append(c16)
 
@@ -178,7 +178,7 @@ Deck := Object clone do(
 
         c19 := Card clone 
         ao19 := AndOrAction clone
-        ao19 init(a3, m2, "or")
+        ao19 init(a3, m2, "Or")
         c19 setslots("forest", ao19, aa, "forestelf.png")
         cards append(c19)
 
@@ -198,12 +198,12 @@ Deck := Object clone do(
         fn23 := ScoreModifierAbility clone 
         fn23 init( "cursed")
 
-        c23 setslots("graveyard", a4, fn23, "graveyard.png")
+        c23 setslots("graveyard", a2, fn23, "graveyard.png")
         cards append(c23)       
 
         c24 := Card clone
         ao24 := AndOrAction clone
-        ao24 init(a2, m3, "or")
+        ao24 init(a2, m3, "Or")
         fn24 := ScoreModifierAbility 
         fn24 clone init("forest")
         //Doesn't count itself
@@ -212,7 +212,7 @@ Deck := Object clone do(
 
         c25 := Card clone 
         ao25 := AndOrAction clone
-        ao25 init(a2, m3, "or")
+        ao25 init(a2, da, "And")
         fn25 := ScoreModifierAbility clone 
         fn25 init("mountain")
 
@@ -225,7 +225,7 @@ Deck := Object clone do(
 
         c27 := Card clone 
         ao27 := AndOrAction clone
-        ao27 init(a5, da, "and")
+        ao27 init(a5, da, "And")
         c27 setslots("night", ao27, aa, "nighthydra.png")
         cards append(c27) 
 
@@ -235,7 +235,7 @@ Deck := Object clone do(
 
         c29 := Card clone
         ao29 := AndOrAction clone
-        ao29 init(a3, da, "and")
+        ao29 init(a3, da, "And")
         fn29 := ScoreModifierAbility clone 
         fn29 init("night")
         c29 setslots("night", ao29, fn29, "nightwizard.png")
@@ -248,13 +248,13 @@ Deck := Object clone do(
 
         c31 := Card clone
         ao31 := AndOrAction clone
-        ao31 init(a4, da, "and")
+        ao31 init(a4, da, "And")
         c31 setslots("noble", ao31, ma, "nobleknight.png")
         cards append(c31)   
 
         c32 := Card clone 
         ao32 := AndOrAction clone
-        ao32 init(m4, a1, "and")
+        ao32 init(m4, a1, "And")
         c32 setslots("noble", ao32, ma, "nobleunicorn.png")
         cards append(c32)     
 

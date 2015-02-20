@@ -233,7 +233,7 @@ EightMinEm := Object clone do(
 		glTranslated(1125,50,0)
 		glColor4d(1,1,1,1)
 		drawString(Game message)
-		if (Game gameState != "Buy",
+		if (Game gameState != "Buy" and Game gameState != "Or",
 			glTranslated(0,fontSize * -1.5,0)
 			glColor4d(0.25,0.25,0.25,1)
 			drawString("Press any key to end current action")
@@ -444,10 +444,16 @@ EightMinEm := Object clone do(
         		inGame = true
         	)
         	display
+		) elseif (Game gameState == "Or") then (
+			if(key asCharacter == "1", 
+				Game activeTurn takeTurn(0)
+			)
+        	if(key asCharacter == "2", 
+        		Game activeTurn takeTurn(1)
+        	)
 		) elseif (Game gameState != "Buy") then (
 			Game activeTurn takeTurn("EndAction")
 		)
-
     )
 
     timer := method(v,

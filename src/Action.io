@@ -3,6 +3,7 @@
 
 AbstractAction := Object clone do(
 	actionType := "ActionType"
+	description := "Description"
 
 	act := method(Turn,
 		nil
@@ -14,6 +15,7 @@ ArmyAction := AbstractAction clone do(
 
 	init := method(n,
 		self nArmies := n
+		self description := "place " .. n .. " armies"
 	)
 
 	act := method(Turn,
@@ -27,6 +29,7 @@ MoveAction := AbstractAction clone do(
 
 	init := method(n,
 		self nMoves := n
+		self description := "move " .. n .. " armies"
 	)
 
 	act := method(Turn,
@@ -37,6 +40,7 @@ MoveAction := AbstractAction clone do(
 
 CityAction := AbstractAction clone do(
 	actionType := "City"
+	description := "place a new castle"
 
 	act := method(Turn,
 		Turn actionType := "City"
@@ -45,6 +49,7 @@ CityAction := AbstractAction clone do(
 
 DestroyAction := AbstractAction clone do(
 	actionType := "Destroy"
+	description := "destroy an army"
 
 	act := method(
 		Turn actionType := "Destroy"
@@ -60,7 +65,7 @@ AndOrAction := AbstractAction clone do(
 		self action2 := a2)
 
 	act := method(Turn,
-		Turn actionType := operator asString
+		Turn actionType := operator
 	)
 )
 

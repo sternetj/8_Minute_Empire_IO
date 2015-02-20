@@ -12,6 +12,7 @@ Turn := Object clone do(
 		self actionType := "N/A"
 		self player := Player
 		self done := false
+		self actions := List clone
 		self
 	)
 	init
@@ -20,7 +21,7 @@ Turn := Object clone do(
 	// TODO: check if they have enough money
 	takeTurn := method(i,
 		if (i == "EndAction") then (
-			Game newTurn
+			self doNextAction()
 		) elseif (Game gameState == "Buy") then (
 			// i is index of selected card
 			bought := Market buyCard(i)
@@ -42,7 +43,7 @@ Turn := Object clone do(
 			)
 
 			if (armies == 0,
-				Game newTurn,
+				self doNextAction(),
 				processAction(ArmyAction clone)
 			)
 
@@ -70,7 +71,7 @@ Turn := Object clone do(
 				Board regions at (i at(1)) armies = mArmies
 			)
 			if (moves == 0,
-				Game newTurn,
+				self doNextAction(),
 				processAction(MoveAction clone)
 			)
 
@@ -82,19 +83,42 @@ Turn := Object clone do(
 				mCastles := i castles
 				mCastles atPut(Game activePlayer, 1)
 				i castles = mCastles
-				Game newTurn
+				self doNextAction()
 			)
+		) elseif (Game gameState == "Or") then (
+			//i is the index of the move to do
+			actions at(i) act(self)
+			processAction(actions at(i))
+			self actions = list()
 		) else (
-			Game newTurn
+			self doNextAction()
 		)
 	)
 
 	processAction := method(action,
-			Game gameState = action actionType
+			if (actionType == "And") then (
+ 		  		action action1 act(self)
+ 		  		self actionType = action action1 actionType
+ 		  		self actions = list(action action2)
+			) elseif (actionType == "Or") then (
+ 		  		self actions = list(action action1, action action2)
+			)
+			writeln(actionType)
+ 		  	Game gameState = actionType
 			Game message = player .. " : " .. if(actionType == "Army", armies .. " armies to place.",
 									 		  if(actionType == "Move", moves .. " remaining moves.",
 									 		  if(actionType == "Destroy", "destroy an army.",
-									 		  if(actionType == "City", "place a city.","AndOr"))))
+									 		  if(actionType == "City", "place a city.",
+									 		  "Do you want to [1] " .. action action1 description .. " or [2] " .. action action2 description .. "?"))))
+	)
+
+	doNextAction := method(
+		if (actions size > 0,
+			self actions at(0) act(self)
+			self processAction(actions at(0))
+			self actions remove(actions at(0)),
+			Game newTurn
+		)
 	)
 
 	toString := method(

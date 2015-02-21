@@ -21,6 +21,7 @@ ArmyAction := AbstractAction clone do(
 	act := method(Turn,
 		Turn armies = (nArmies + (Turn player armyMod))
 		Turn actionType := "Army"
+		writeln("adding " .. nArmies .. " to turn")
 	)
 )
 
@@ -51,8 +52,10 @@ DestroyAction := AbstractAction clone do(
 	actionType := "Destroy"
 	description := "destroy an army"
 
-	act := method(
-		Turn actionType := "Destroy"
+	act := method(Turn,
+		
+		Turn actionType = "Destroy"
+		writeln("in destroy action " .. Turn toString)
 	)
 )
 

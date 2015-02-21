@@ -32,7 +32,7 @@ Card := Object clone do(
     )
 )
 
-// TODO: do we need to handle the deck running out of cards?
+// TODO: do we need to handle the deck running out of cards? 
 Deck := Object clone do(
     init := method(
 	    self cards := List clone
@@ -79,7 +79,6 @@ Deck := Object clone do(
         ia := ImmuneAbility clone
 
         
-        // TODO : Deal w/ AndOr
         c0 := Card clone 
         c0 setslots("ancient", m5, fa, "ancientphoenix.png")
         cards append(c0)
@@ -101,7 +100,9 @@ Deck := Object clone do(
         cards append(c3)
 
         c4 := Card clone 
-        c4 setslots("arcane", a4, da, "arcanemanticore.png")
+        ao4 := AndOrAction clone
+        ao4 init(a4, da, "And")
+        c4 setslots("arcane", ao4, ma, "arcanemanticore.png")
         cards append(c4)
 
         c5 := Card clone 
@@ -216,7 +217,7 @@ Deck := Object clone do(
         fn25 := ScoreModifierAbility clone 
         fn25 init("mountain")
 
-        c25 setslots("mountain", ao24, fn24, "mountaindwarf.png")
+        c25 setslots("mountain", ao25, fn24, "mountaindwarf.png")
         cards append(c25) 
 
         c26 := Card clone 
@@ -225,7 +226,7 @@ Deck := Object clone do(
 
         c27 := Card clone 
         ao27 := AndOrAction clone
-        ao27 init(a5, da, "And")
+        ao27 init(m5, da, "And")
         c27 setslots("night", ao27, aa, "nighthydra.png")
         cards append(c27) 
 

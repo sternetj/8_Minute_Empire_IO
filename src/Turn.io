@@ -112,7 +112,7 @@ Turn := Object clone do(
 									 		  if(actionType == "Move", moves .. " remaining moves.",
 									 		  if(actionType == "Destroy", "destroy an army.",
 									 		  if(actionType == "City", "place a city.",
-									 		  "Do you want to [1] " .. action action1 description .. "\n or [2] " .. action action2 description .. "?"))))
+									 		  "Do you want to\n[1] " .. action action1 description .. "or\n[2] " .. action action2 description .. "?"))))
 			writeln(Game message)
 	)
 

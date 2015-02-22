@@ -111,71 +111,73 @@ EightMinEm := Object clone do(
 	mouse := method(button, state, mx, my,
 		self mouseX = mx
 		self mouseY = height - my
-		if (inGame and state == 0 and button == 0,
-			//writeln("(",mx,",",self height - my,")")
-			self clickState = 1
-			if (Game gameState == "Buy") then (
-				// do buy card in release to confirm placement like in chess
-				false
-			) elseif (Game gameState == "Army") then (
-				// do place army in release to confirm placement like in chess
-				false
-			) elseif (Game gameState == "Move") then (
-				self clickState = 0
-				for(j, 0, Board regions size - 1,
-					px :=  (Board regions at(j)) x
-					py :=  (Board regions at(j)) y
-					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
-						if (Board regions at(j) armies at(Game activePlayer) > 0,
-							writeln("Move army from region ", j + 1)
-							self fromRegion = j
-							self clickState = 1						
+		if (inGame,
+			if (state == 0 and button == 0,
+				//writeln("(",mx,",",self height - my,")")
+				self clickState = 1
+				if (Game gameState == "Buy") then (
+					// do buy card in release to confirm placement like in chess
+					false
+				) elseif (Game gameState == "Army") then (
+					// do place army in release to confirm placement like in chess
+					false
+				) elseif (Game gameState == "Move") then (
+					self clickState = 0
+					for(j, 0, Board regions size - 1,
+						px :=  (Board regions at(j)) x
+						py :=  (Board regions at(j)) y
+						if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+							if (Board regions at(j) armies at(Game activePlayer) > 0,
+								writeln("Move army from region ", j + 1)
+								self fromRegion = j
+								self clickState = 1						
+							)
 						)
 					)
+				) elseif (Game gameState == "Destroy") then (
+					false
+				) elseif (Game gameState == "City") then (
+					// do place city in release to confirm placement like in chess
+					false
+				) else (
+					writeln("In Main.io, Invalid gameState:", Game gameState )
+					false
 				)
-			) elseif (Game gameState == "Destroy") then (
-				false
-			) elseif (Game gameState == "City") then (
-				// do place city in release to confirm placement like in chess
-				false
-			) else (
-				writeln("In Main.io, Invalid gameState:", Game gameState )
-				false
-			)
-			,
-			self clickState = 0
-			if (Game gameState == "Buy") then (
-				for(j, 0, Market locations size - 1,
-					px :=  (Market locations at(j)) x + 50
-					py :=  (Market locations at(j)) y - 90
-					if(((px - mx) abs < 100) and ((py - (self height - my)) abs < 180),
-						Game activeTurn takeTurn(j)
+				,
+				self clickState = 0
+				if (Game gameState == "Buy") then (
+					for(j, 0, Market locations size - 1,
+						px :=  (Market locations at(j)) x + 50
+						py :=  (Market locations at(j)) y - 90
+						if(((px - mx) abs < 100) and ((py - (self height - my)) abs < 180),
+							Game activeTurn takeTurn(j)
+						)
 					)
-				)
-			) elseif (Game gameState == "Army" or Game gameState == "City") then (
-				for(j, 0, Board regions size - 1,
-					px :=  (Board regions at(j)) x
-					py :=  (Board regions at(j)) y
-					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
-						writeln("Place relative piece in region ", j + 1)
-						//placeRegion := Board regions at(j)
-						Game activeTurn takeTurn(Board regions at(j))
+				) elseif (Game gameState == "Army" or Game gameState == "City") then (
+					for(j, 0, Board regions size - 1,
+						px :=  (Board regions at(j)) x
+						py :=  (Board regions at(j)) y
+						if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+							writeln("Place relative piece in region ", j + 1)
+							//placeRegion := Board regions at(j)
+							Game activeTurn takeTurn(Board regions at(j))
+						)
 					)
-				)
-			) elseif (Game gameState == "Move") then (
-				for(j, 0, Board regions size - 1,
-					px :=  (Board regions at(j)) x
-					py :=  (Board regions at(j)) y
-					if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
-						writeln("Move army to region ", j + 1)
-						Game activeTurn takeTurn(list(fromRegion, j))
+				) elseif (Game gameState == "Move") then (
+					for(j, 0, Board regions size - 1,
+						px :=  (Board regions at(j)) x
+						py :=  (Board regions at(j)) y
+						if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+							writeln("Move army to region ", j + 1)
+							Game activeTurn takeTurn(list(fromRegion, j))
+						)
 					)
-				)
 
-			) elseif (Game gameState == "Destroy") then (
-				false
-			) else (
-				false
+				) elseif (Game gameState == "Destroy") then (
+					false
+				) else (
+					false
+				)
 			)
 		)	
 		display
@@ -263,8 +265,15 @@ EightMinEm := Object clone do(
 	)
 
 	drawString := method(string,
-		if (self ?font) then (
-			self font drawString(string)
+		if (self ?fontSize) then (
+			ss := string split("\n")
+			ss foreach(i,v,
+				glPushMatrix
+				glTranslated(0,-20*(i - (ss size) + 1),0)
+				glScaled(0.14, 0.1, 0)				
+				glutStrokeString(0, v)
+				glPopMatrix
+			)
 		) else (
 			glPushMatrix
 			glScaled(0.14, 0.1, 0)

@@ -49,12 +49,28 @@ CityAction := AbstractAction clone do(
 )
 
 DestroyAction := AbstractAction clone do(
-	actionType := "Destroy"
+	actionType := "DestroyChooseRegion"
 	description := "destroy an army"
 
 	act := method(Turn,
 		
-		Turn actionType = "Destroy"
+		Turn actionType = "DestroyChooseRegion"
+		writeln("in destroy action " .. Turn toString)
+	)
+)
+
+DestroyPlayerAction := AbstractAction clone do(
+	actionType := "DestroyChoosePlayer"
+	description := "destroy an army"
+
+	init := method(region,
+		self region := region
+		self
+	)
+
+	act := method(Turn,
+		
+		Turn actionType = "DestroyChoosePlayer"
 		writeln("in destroy action " .. Turn toString)
 	)
 )

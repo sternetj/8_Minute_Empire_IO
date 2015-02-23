@@ -13,6 +13,7 @@ Turn := Object clone do(
 		self player := Player
 		self done := false
 		self actions := List clone
+		self regionToDestroy := -1
 		self
 	)
 	init
@@ -75,8 +76,32 @@ Turn := Object clone do(
 				processAction(MoveAction clone)
 			)
 
-		) elseif (Game gameState == "Destroy") then (
-			self doNextAction()
+		) elseif (Game gameState == "DestroyChooseRegion") then (
+			playerCount := 0
+			playerIndices := list()
+			i armies foreach(idx,a, 
+				if(a > 0 and idx != Game activePlayer, 
+					playerCount = playerCount + 1
+					playerIndices append(idx)
+				)
+			)
+			if (playerCount == 1,
+				i armies atPut(playerIndices at(0), i armies at(playerIndices at(0)) - 1)
+				self doNextAction()
+			, if(playerCount > 1,
+				"in playercount > 1" println
+				self regionToDestroy = i
+				destroyPlayer := DestroyPlayerAction clone
+				("current act type = " .. self actionType) println
+				destroyPlayer act(self)
+				("new act type = " .. self actionType) println
+				processAction(destroyPlayer)
+			))	
+		) elseif (Game gameState == "DestroyChoosePlayer") then(
+			if(regionToDestroy armies at(i) > 0 and i != Game activePlayer,
+				regionToDestroy armies atPut(i, regionToDestroy armies at(i) - 1)
+				self doNextAction()
+			)
 		) elseif (Game gameState == "City") then (
 			//TODO: can only place city if you have an army in the region
 			//i is the region to add the city too
@@ -98,6 +123,7 @@ Turn := Object clone do(
 	)
 
 	processAction := method(action,
+			("processing act type = " .. actionType) println
 			if (actionType == "And") then (
 				writeln("and action with first ".. action action1 asString)
  		  		action action1 act(self)
@@ -110,10 +136,21 @@ Turn := Object clone do(
  		  	Game gameState = actionType
 			Game message = player .. " : " .. if(actionType == "Army", armies .. " armies to place.",
 									 		  if(actionType == "Move", moves .. " remaining moves.",
-									 		  if(actionType == "Destroy", "destroy an army.",
+									 		  if(actionType == "DestroyChooseRegion", "destroy an army.",
+									 		  if(actionType == "DestroyChoosePlayer", getDestroyChoosePlayerString,
 									 		  if(actionType == "City", "place a city.",
-									 		  "Do you want to\n[1] " .. action action1 description .. "or\n[2] " .. action action2 description .. "?"))))
+									 		  "Do you want to\n[1] " .. action action1 description .. "or\n[2] " .. action action2 description .. "?")))))
 			writeln(Game message)
+	)
+
+	getDestroyChoosePlayerString := method(
+		str := " whose army do you want to destroy?"
+		Game players foreach(i,p,
+			if(regionToDestroy armies at(i) > 0 and i != Game activePlayer,
+				str = str .. "\n[" .. (i+1) .. "]" .. p name
+			)
+		)
+		str
 	)
 
 	doNextAction := method(

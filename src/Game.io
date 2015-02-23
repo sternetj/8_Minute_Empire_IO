@@ -66,6 +66,7 @@ Game := Object clone do(
 			self currentRound = self currentRound + 1
 		)
 		if(gameOver,
+			self gameState := "GameOver"
 			calculateScores,
 			
 			self activeTurn := Turn clone init(self players at(activePlayer))
@@ -75,7 +76,7 @@ Game := Object clone do(
 
 	gameOver := method(
 		if(players size == 2,
-			self currentRound > 12,
+			self currentRound > 0,
 		if(players size == 3,
 			self currentRound > 10,
 		if(players size == 4,
@@ -132,8 +133,15 @@ Game := Object clone do(
 			if(winner score > p score,
 				winner = p)
 		)
-		self message = "Winner is " .. p .. " with " .. p score .. if(p score == 1, " point", " points")
-	)
 
-	// TODO: Game Loop!
+		winners := List clone
+		self players foreach(p,
+			if(winner score == p score,
+				winners append(p))
+		)
+		if(winners size > 1,
+			self message = "Winners are " .. for(i, 0, winners size - 2, winners at(i) .. " & ") .. winners at(winners size - 1) .. " with " .. winner score  .. if(winner score == 1, " point", " points"),
+			self message = "Winner is " .. winner .. " with " .. winner score .. if(winner score == 1, " point", " points")
+		)
+	)
 )

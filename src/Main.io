@@ -134,7 +134,7 @@ EightMinEm := Object clone do(
 							)
 						)
 					)
-				) elseif (Game gameState == "Destroy") then (
+				) elseif (Game gameState == "DestroyChooseRegion") then (
 					false
 				) elseif (Game gameState == "City") then (
 					// do place city in release to confirm placement like in chess
@@ -173,7 +173,16 @@ EightMinEm := Object clone do(
 						)
 					)
 
-				) elseif (Game gameState == "Destroy") then (
+				) elseif (Game gameState == "DestroyChooseRegion") then (
+					for(j, 0, Board regions size - 1,
+						px :=  (Board regions at(j)) x
+						py :=  (Board regions at(j)) y
+						if(((px - mx) abs < regionRadius) and ((py - my) abs < regionRadius),
+							writeln("Destroy army in region ", j + 1)
+							Game activeTurn takeTurn(Board regions at(j))
+						)
+					)
+				) elseif (Game gameState == "DestroyChoosePlayer") then (
 					false
 				) else (
 					false
@@ -427,7 +436,7 @@ EightMinEm := Object clone do(
 		//draw stuff here
 		if(inGame not, drawBackground, drawGame; drawMarket; drawHoverCard)
 
-		if(inGame and (Game gameState == "Army" or Game gameState == "Move" or Game gameState == "City"),
+		if(inGame and (Game gameState == "Army" or Game gameState == "Move" or Game gameState == "City" or Game gameState == "DestroyChooseRegion"),
 			drawRegions
 		)
 
@@ -435,7 +444,7 @@ EightMinEm := Object clone do(
 			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
 		)
 
-		if(self clickState == 1 and inGame and (mouseX > 40 and mouseX < 205 and mouseY > 873 and mouseY < 925),
+		if(self clickState == 1 and inGame and Game gameState != "Buy" and (mouseX > 40 and mouseX < 205 and mouseY > 873 and mouseY < 925),
 			self clickState = 0
 			Game newTurn
 		)
@@ -465,6 +474,19 @@ EightMinEm := Object clone do(
 			)
         	if(key asCharacter == "2", 
         		Game activeTurn takeTurn(1)
+        	)
+		) elseif (Game gameState == "DestroyChoosePlayer") then (
+			if(key asCharacter == "1",
+				Game activeTurn takeTurn(0)
+			)
+			if(key asCharacter == "2", 
+				Game activeTurn takeTurn(1)
+			)
+        	if(key asCharacter == "3", 
+        		Game activeTurn takeTurn(2)
+        	)
+        	if(key asCharacter == "4", 
+        		Game activeTurn takeTurn(3)
         	)
 		) elseif (Game gameState != "Buy") then (
 			Game activeTurn takeTurn("EndAction")

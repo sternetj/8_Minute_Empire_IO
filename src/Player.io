@@ -4,6 +4,7 @@
 Player := Object clone do(
 
 	init := method(name, startCoins,imgName,color,
+		self score := 0
 		self name := name		
 		self coins := startCoins
 		self moveMod := 0

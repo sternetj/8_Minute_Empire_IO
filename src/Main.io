@@ -444,7 +444,7 @@ EightMinEm := Object clone do(
 			Game players at(Game activePlayer) icon drawImage(mouseX,mouseY)
 		)
 
-		if(self clickState == 1 and inGame and (mouseX > 40 and mouseX < 205 and mouseY > 873 and mouseY < 925),
+		if(self clickState == 1 and inGame and Game gameState != "Buy" and (mouseX > 40 and mouseX < 205 and mouseY > 873 and mouseY < 925),
 			self clickState = 0
 			Game newTurn
 		)

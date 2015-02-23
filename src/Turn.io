@@ -23,7 +23,7 @@ Turn := Object clone do(
 			self doNextAction()
 		) elseif (Game gameState == "Buy") then (
 			// i is index of selected card
-			if (-1 < player coins - Market costs at(i)) then (
+			if (-1 < player coins - Market costs at(i) and Market isCard(i)) then (
 			bought := Market buyCard(i)
 			card := bought at(0)
 			cost := bought at(1)
@@ -34,7 +34,7 @@ Turn := Object clone do(
 			processAction(card action))
 		) elseif (Game gameState == "Army") then (
 			//i is the region to add the army too
-			if (i castles at(Game activePlayer) > 0 or i == Board regions at(Game startingRegion),
+			if (i == Board regions at(Game startingRegion) or i castles at(Game activePlayer) > 0,
 				mArmies := i armies
 				mArmies atPut(Game activePlayer, mArmies at(Game activePlayer) + 1)
 				i armies = mArmies
@@ -186,6 +186,12 @@ Market := Object clone do(
 		r6 init("m6",850,210)
 		self locations := list(r1,r2,r3,r4,r5,r6)
 		Deck shuffle
+		
+		//add empty cards to the back of the deck
+		cardback := Card clone
+    	cardback init(nil, nil, nil, "cardback.png")
+	    for(i, 0, 6, Deck cards insertAt(cardback, 0))
+		
 		self available := List clone
 		for(i, 1, 6, available append(Deck dealCard))
 	)
@@ -196,6 +202,10 @@ Market := Object clone do(
 		available remove(purchased)
 		if(Deck cards size > 0, available append(Deck dealCard))
 		list(purchased,costs at(i))
+	)
+	isCard := method(i,
+		card := available at(i)
+		card category != nil
 	)
     show := method(
     	for(i, 0, 5,

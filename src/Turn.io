@@ -33,7 +33,7 @@ Turn := Object clone do(
 			processAction(card action))
 		) elseif (Game gameState == "Army") then (
 			//i is the region to add the army too
-			if (i castles at(Game activePlayer) > 0 or i == Board regions at(Game startingRegion),
+			if (i == Board regions at(Game startingRegion) or i castles at(Game activePlayer) > 0,
 				mArmies := i armies
 				mArmies atPut(Game activePlayer, mArmies at(Game activePlayer) + 1)
 				i armies = mArmies

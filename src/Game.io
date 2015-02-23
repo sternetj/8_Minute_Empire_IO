@@ -65,17 +65,29 @@ Game := Object clone do(
 		if (self activePlayer == self startingPlayer, 
 			self currentRound = self currentRound + 1
 		)
-		self activeTurn := Turn clone init(self players at(activePlayer))
-		self message = self players at(activePlayer) .. " buy a card"
+		if(gameOver,
+			calculateScores,
+			
+			self activeTurn := Turn clone init(self players at(activePlayer))
+			self message = self players at(activePlayer) .. " buy a card"
+		)
 	)
 
+	gameOver := method(
+		if(players size == 2,
+			self currentRound > 12,
+		if(players size == 3,
+			self currentRound > 10,
+		if(players size == 4,
+			self currentRound > 8)))
+	)
 
 	calculateScores := method(
 		continentCounts := Map clone with("N", list(0,0,0,0), "W", list(0,0,0,0), "S", list(0,0,0,0), "E", list(0,0,0,0), "Island", list(0,0,0,0))
 		board regions foreach(r,
 			continentCounts atPut(r continent,
 				temp := continentCounts at(r continent) clone
-				for(i, 0, 4,
+				for(i, 0, 3,
 					temp atPut(i, temp at(i) + r armies at(i))
 				)
 				temp
@@ -102,7 +114,7 @@ Game := Object clone do(
 			continentCounts values foreach(contArmies,
 				maxContArmies := contArmies max
 				maxContArmyCount := contArmies select(v, v == maxContArmies) size
-				if(maxContArmies == armies at(i) and maxContArmyCount == 1, score = score + 1)
+				if(maxContArmies == r armies at(i) and maxContArmyCount == 1, score = score + 1)
 			)
 
 			//Abilities
@@ -111,7 +123,16 @@ Game := Object clone do(
 			//Elixirs
 			if(maxElixirs == elixirs at(i) and maxElixirCount == 1, score + 2,
 			if(maxElixirs == elixirs at(i), score + 1, score))
+
+			p score = score
 		)
+
+		winner := players at(0)
+		self players foreach(p,
+			if(winner score > p score,
+				winner = p)
+		)
+		self message = "Winner is " .. p .. " with " .. p score .. if(p score == 1, " point", " points")
 	)
 
 	// TODO: Game Loop!
